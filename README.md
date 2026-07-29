@@ -21,3 +21,10 @@ Depois disso, a ação será executada diariamente às 07:15 no horário de Bras
 - `assets/eventos/`: imagens genéricas por categoria.
 
 Os eventos são ordenados pela data mais próxima. Eventos vencidos deixam de aparecer no site. Como os sites externos podem alterar a estrutura das páginas, o coletor poderá precisar de ajuste futuro.
+
+
+## Atualização: Relaxamento e Lazer
+- Respiração guiada com animação e três técnicas.
+- Alongamentos com ilustrações vetoriais.
+- Jogos de descompressão interativos.
+- Humor do Dia com piadas, quadrinhos e charges originais.
