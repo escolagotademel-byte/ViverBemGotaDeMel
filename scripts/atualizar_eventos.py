@@ -239,6 +239,81 @@ def walk_json(value: Any) -> Iterable[dict[str, Any]]:
             yield from walk_json(child)
 
 
+
+def events_from_appai_text(html: str) -> list[Event]:
+    """Extrai a programação da APPAI a partir do texto visível da página.
+
+    A página da APPAI lista os eventos em pares de linhas: título e
+    ``DD/MM - Local``. Esse formato é mais estável que depender de classes
+    CSS específicas, que mudam com frequência no construtor visual do site.
+    """
+    soup = BeautifulSoup(html, "lxml")
+
+    # Remove elementos que poluem o texto visível.
+    for node in soup.select("script, style, noscript, svg, nav, footer"):
+        node.decompose()
+
+    lines = [clean_text(line, 260) for line in soup.get_text("\n").splitlines()]
+    lines = [line for line in lines if line]
+
+    date_line = re.compile(
+        r"^(?P<day>\d{1,2})/(?P<month>\d{1,2})(?:/(?P<year>\d{2,4}))?\s*[-–—]\s*(?P<place>.+)$"
+    )
+    blocked = {
+        "confira a programação", "eventos", "aconteceu", "saiba mais",
+        "consulte disponibilidade", "clique e faça sua pré-inscrição",
+    }
+
+    results: list[Event] = []
+    for idx, line in enumerate(lines):
+        match = date_line.match(line)
+        if not match or idx == 0:
+            continue
+
+        title = lines[idx - 1].strip(" -–—")
+        if normalize(title) in {normalize(x) for x in blocked}:
+            continue
+        if len(title) < 3 or len(title) > 180:
+            continue
+
+        day = int(match.group("day"))
+        month = int(match.group("month"))
+        raw_year = match.group("year")
+        year = int(raw_year) if raw_year else date.today().year
+        if year < 100:
+            year += 2000
+
+        try:
+            candidate = date(year, month, day)
+        except ValueError:
+            continue
+
+        # A APPAI normalmente omite o ano. Em dezembro/janeiro, ajuste para
+        # o próximo ano quando necessário.
+        if not raw_year and candidate < date.today():
+            try:
+                candidate = candidate.replace(year=year + 1)
+            except ValueError:
+                continue
+
+        if candidate < date.today() or candidate > date.today() + timedelta(days=370):
+            continue
+
+        place = clean_text(match.group("place"), 180)
+        event = make_event(
+            title=title,
+            raw_date=candidate.isoformat(),
+            raw_time=line,
+            source="APPAI",
+            link=SOURCES["APPAI"],
+            description=f"{title}. Programação divulgada pela APPAI. Consulte disponibilidade, horários e regras no site oficial.",
+            location=place,
+        )
+        if event:
+            results.append(event)
+
+    return deduplicate(results)
+
 def events_from_jsonld(html: str, source: str) -> list[Event]:
     soup = BeautifulSoup(html, "lxml")
     results: list[Event] = []
@@ -352,6 +427,8 @@ async def collect_source(browser: Browser, source: str, url: str) -> list[Event]
         await expand_page(page, source)
         html = await page.content()
         events = events_from_jsonld(html, source)
+        if source == "APPAI":
+            events.extend(events_from_appai_text(html))
         events.extend(await events_from_dom(page, source))
         print(f"{source}: {len(events)} registros candidatos")
         return deduplicate(events)
