@@ -1,0 +1,11 @@
+PASTAS PARA ADICIONAR NA RAIZ DO REPOSITÓRIO
+
+1. Copie a pasta .github inteira.
+2. Copie a pasta scripts inteira.
+3. Faça o commit no GitHub.
+4. Em Settings > Actions > General > Workflow permissions, marque:
+   Read and write permissions
+5. Abra Actions > Atualizar agenda cultural > Run workflow.
+
+O script criará automaticamente data/eventos.json.
+A pasta .github é oculta no Windows; mantenha exatamente esse nome.

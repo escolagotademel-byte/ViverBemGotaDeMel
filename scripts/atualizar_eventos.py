@@ -1,294 +1,457 @@
-"""Atualiza data/eventos.json com eventos reais publicados pela APPAI e pelo SESC Rio.
+#!/usr/bin/env python3
+"""Atualiza data/eventos.json com eventos futuros da APPAI e do SESC Rio.
 
-O coletor usa um navegador real (Playwright), pois a programação pode ser carregada
-por JavaScript. As imagens exibidas no Viver Bem são ilustrações genéricas locais.
+O coletor procura primeiro dados estruturados (JSON-LD/Event) e depois usa
+uma leitura visual dos cartões e links da página. Caso uma das fontes falhe,
+os eventos futuros já existentes dessa fonte são preservados.
 """
+
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import re
+import sys
 import unicodedata
 from dataclasses import dataclass, asdict
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import Iterable
+from typing import Any, Iterable
 from urllib.parse import urljoin, urlparse
 
-from dateutil import parser as date_parser
-from playwright.async_api import async_playwright, Page
+import dateparser
+from bs4 import BeautifulSoup
+from playwright.async_api import Browser, Page, TimeoutError as PlaywrightTimeoutError, async_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "eventos.json"
-CURRENT_YEAR = date.today().year
-MAX_EVENTS_PER_SOURCE = 30
 
 SOURCES = {
     "APPAI": "https://www.appai.org.br/lazer/eventos/",
     "SESC": "https://www.sescrio.org.br/programacao/",
 }
 
-DATE_RE = re.compile(r"\b(\d{1,2})[./-](\d{1,2})(?:[./-](\d{2,4}))?\b")
-TIME_RE = re.compile(r"\b([01]?\d|2[0-3])(?::|h)([0-5]\d)?\b", re.I)
+GENERIC_IMAGES = {
+    "teatro": "https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=1200&q=80",
+    "musica": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80",
+    "danca": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=1200&q=80",
+    "cinema": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80",
+    "exposicao": "https://images.unsplash.com/photo-1561214115-f2f134cc4912?auto=format&fit=crop&w=1200&q=80",
+    "infantil": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1200&q=80",
+    "oficina": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1200&q=80",
+    "literatura": "https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=1200&q=80",
+    "esporte": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
+    "cultura": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80",
+}
+
+MONTHS_PT = (
+    "janeiro|fevereiro|março|marco|abril|maio|junho|julho|agosto|"
+    "setembro|outubro|novembro|dezembro"
+)
+DATE_PATTERNS = [
+    re.compile(r"\b(\d{1,2})[/.\-](\d{1,2})(?:[/.\-](\d{2,4}))?\b"),
+    re.compile(rf"\b(\d{{1,2}})\s+de\s+({MONTHS_PT})(?:\s+de\s+(\d{{4}}))?\b", re.I),
+]
+TIME_PATTERN = re.compile(r"\b([01]?\d|2[0-3])[:h]([0-5]\d)?\b", re.I)
+
 
 @dataclass
 class Event:
     id: str
     titulo: str
     data: str
-    dataFim: str | None
     horario: str
     local: str
     descricao: str
     fonte: str
-    url: str
-    categoria: str
+    link: str
     imagem: str
+    categoria: str
+    imagemIlustrativa: bool = True
+
+    def compatible_dict(self) -> dict[str, Any]:
+        data = asdict(self)
+        # Aliases para manter compatibilidade com diferentes versões do front-end.
+        data.update(
+            {
+                "title": self.titulo,
+                "date": self.data,
+                "time": self.horario,
+                "location": self.local,
+                "description": self.descricao,
+                "source": self.fonte,
+                "url": self.link,
+                "image": self.imagem,
+                "category": self.categoria,
+            }
+        )
+        return data
 
 
-def clean(value: str | None) -> str:
-    return re.sub(r"\s+", " ", value or "").strip(" \n\t-|•")
+def clean_text(value: Any, limit: int = 600) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        value = " ".join(str(v) for v in value if v)
+    text = BeautifulSoup(str(value), "html.parser").get_text(" ", strip=True)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text[:limit]
 
 
-def slug(value: str) -> str:
-    value = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()
-    value = re.sub(r"[^a-zA-Z0-9]+", "-", value.lower()).strip("-")
-    return value[:70] or "evento"
+def normalize(value: str) -> str:
+    value = unicodedata.normalize("NFKD", value or "")
+    value = "".join(ch for ch in value if not unicodedata.combining(ch))
+    return re.sub(r"[^a-z0-9]+", " ", value.lower()).strip()
 
 
-def parse_date(text: str) -> date | None:
-    match = DATE_RE.search(text)
-    if not match:
-        # Algumas páginas usam datas por extenso.
-        months = {
-            "janeiro": 1, "fevereiro": 2, "marco": 3, "março": 3,
-            "abril": 4, "maio": 5, "junho": 6, "julho": 7,
-            "agosto": 8, "setembro": 9, "outubro": 10,
-            "novembro": 11, "dezembro": 12,
-        }
-        m = re.search(r"\b(\d{1,2})\s+de\s+([a-zç]+)(?:\s+de\s+(\d{4}))?", text.lower())
-        if not m or m.group(2) not in months:
-            return None
-        year = int(m.group(3) or CURRENT_YEAR)
-        try:
-            candidate = date(year, months[m.group(2)], int(m.group(1)))
-        except ValueError:
-            return None
-    else:
-        day, month = int(match.group(1)), int(match.group(2))
-        year_raw = match.group(3)
-        year = int(year_raw) if year_raw else CURRENT_YEAR
-        if year < 100:
-            year += 2000
-        try:
-            candidate = date(year, month, day)
-        except ValueError:
-            return None
-
-    # Em dezembro, uma agenda de janeiro sem ano normalmente se refere ao ano seguinte.
-    if candidate < date.today() and not re.search(r"\d{4}", text):
-        if date.today().month == 12 and candidate.month <= 2:
-            candidate = candidate.replace(year=CURRENT_YEAR + 1)
-    return candidate
-
-
-def category(text: str) -> str:
-    value = text.lower()
-    groups = [
-        ("infantil", ("infantil", "criança", "kids", "família", "familia", "contação", "contacao")),
-        ("musica", ("show", "música", "musica", "concerto", "samba", "jazz", "tributo", "musical")),
-        ("exposicao", ("exposição", "exposicao", "mostra", "galeria", "artes visuais")),
-        ("cinema", ("cinema", "filme", "cine")),
-        ("danca", ("dança", "danca", "ballet", "balé")),
-        ("comedia", ("comédia", "comedia", "stand up", "humor")),
-        ("teatro", ("teatro", "peça", "peca", "espetáculo", "espetaculo")),
-        ("esporte", ("esporte", "corrida", "caminhada", "torneio")),
+def category_for(text: str) -> str:
+    n = normalize(text)
+    mapping = [
+        ("teatro", ("teatro", "espetaculo", "peça", "peca", "circo")),
+        ("musica", ("show", "musica", "musical", "concerto", "samba", "jazz", "mpb")),
+        ("danca", ("danca", "dança", "ballet", "balé")),
+        ("cinema", ("cinema", "filme", "sessao", "sessão")),
+        ("exposicao", ("exposicao", "exposição", "mostra", "galeria", "museu")),
+        ("infantil", ("infantil", "crianca", "criança", "familia", "família")),
+        ("oficina", ("oficina", "workshop", "vivencia", "vivência")),
+        ("literatura", ("livro", "leitura", "literatura", "poesia")),
+        ("esporte", ("esporte", "corrida", "futebol", "volei", "vôlei", "atividade fisica")),
     ]
-    for key, words in groups:
-        if any(word in value for word in words):
-            return key
+    for category, words in mapping:
+        if any(normalize(word) in n for word in words):
+            return category
     return "cultura"
 
 
-def image_for(cat: str) -> str:
-    return f"assets/eventos/{cat if cat in {'infantil','musica','exposicao','cinema','danca','comedia','teatro','esporte'} else 'cultura'}.svg"
+def parse_date(value: str) -> date | None:
+    value = clean_text(value, 250)
+    if not value:
+        return None
+
+    settings = {
+        "DATE_ORDER": "DMY",
+        "PREFER_DATES_FROM": "future",
+        "RELATIVE_BASE": datetime.now(),
+        "RETURN_AS_TIMEZONE_AWARE": False,
+        "PARSERS": ["absolute-time", "relative-time", "custom-formats"],
+    }
+    parsed = dateparser.parse(value, languages=["pt"], settings=settings)
+    if parsed:
+        candidate = parsed.date()
+        # Quando o site omite o ano e o parser escolhe o passado, use o próximo ano.
+        if candidate < date.today() - timedelta(days=2) and not re.search(r"\b20\d{2}\b", value):
+            try:
+                candidate = candidate.replace(year=candidate.year + 1)
+            except ValueError:
+                pass
+        return candidate
+
+    return None
+
+
+def extract_date_from_text(text: str) -> date | None:
+    for pattern in DATE_PATTERNS:
+        for match in pattern.finditer(text):
+            parsed = parse_date(match.group(0))
+            if parsed:
+                return parsed
+    return None
 
 
 def extract_time(text: str) -> str:
-    m = TIME_RE.search(text)
-    if not m:
-        return "Consulte no site oficial"
-    minute = m.group(2) or "00"
-    return f"{int(m.group(1)):02d}:{minute}"
+    match = TIME_PATTERN.search(text or "")
+    if not match:
+        return ""
+    hour = int(match.group(1))
+    minute = int(match.group(2) or 0)
+    return f"{hour:02d}:{minute:02d}"
 
 
-def likely_location(lines: list[str], date_line_index: int) -> str:
-    around = lines[max(0, date_line_index - 2):date_line_index + 4]
-    keywords = ("teatro", "sesc", "centro cultural", "sala", "cidade das artes", "shopping", "unidade", "arena", "auditório", "auditorio")
-    for line in around:
-        low = line.lower()
-        if any(k in low for k in keywords) and not DATE_RE.search(line):
-            return clean(line)[:120]
-    # APPAI costuma escrever “30/07 - Teatro ...”
-    date_line = lines[date_line_index]
-    if " - " in date_line:
-        right = clean(date_line.split(" - ", 1)[1])
-        if right:
-            return right[:120]
-    return "Consulte no site oficial"
+def location_from_json(value: Any) -> str:
+    if isinstance(value, str):
+        return clean_text(value, 180)
+    if isinstance(value, dict):
+        name = clean_text(value.get("name"), 120)
+        address = value.get("address")
+        if isinstance(address, dict):
+            address_text = ", ".join(
+                clean_text(address.get(k), 80)
+                for k in ("streetAddress", "addressLocality", "addressRegion")
+                if address.get(k)
+            )
+        else:
+            address_text = clean_text(address, 160)
+        return " — ".join(part for part in (name, address_text) if part)
+    return ""
 
 
-async def expand_page(page: Page) -> None:
-    # Tenta carregar cards que aparecem ao rolar ou ao clicar em “carregar mais”.
-    for _ in range(8):
-        await page.mouse.wheel(0, 1800)
-        await page.wait_for_timeout(500)
-        for label in ("Carregar mais", "Ver mais", "Mostrar mais", "Mais eventos"):
-            button = page.get_by_text(label, exact=False)
-            try:
-                if await button.count() and await button.first.is_visible():
-                    await button.first.click(timeout=1200)
-                    await page.wait_for_timeout(900)
-            except Exception:
-                pass
+def make_event(
+    *,
+    title: str,
+    raw_date: str,
+    source: str,
+    link: str,
+    description: str = "",
+    location: str = "",
+    raw_time: str = "",
+) -> Event | None:
+    title = clean_text(title, 180)
+    if len(title) < 3:
+        return None
+
+    event_date = parse_date(raw_date) or extract_date_from_text(" ".join([raw_date, description, title]))
+    if event_date is None or event_date < date.today():
+        return None
+    if event_date > date.today() + timedelta(days=370):
+        return None
+
+    link = urljoin(SOURCES[source], link or SOURCES[source])
+    category = category_for(" ".join([title, description]))
+    digest = hashlib.sha1(f"{source}|{normalize(title)}|{event_date.isoformat()}".encode()).hexdigest()[:12]
+    time = extract_time(raw_time) or extract_time(raw_date) or extract_time(description)
+
+    description = clean_text(description, 500)
+    if not description:
+        description = f"Programação publicada por {source}. Consulte os detalhes e condições no site oficial."
+
+    return Event(
+        id=f"{normalize(source)}-{digest}",
+        titulo=title,
+        data=event_date.isoformat(),
+        horario=time,
+        local=clean_text(location, 180),
+        descricao=description,
+        fonte=source,
+        link=link,
+        imagem=GENERIC_IMAGES[category],
+        categoria=category,
+    )
 
 
-async def collect_candidates(page: Page, source: str, base_url: str) -> list[tuple[str, str]]:
-    """Retorna pares (texto do bloco, URL), usando cards/links e um fallback pelo corpo."""
-    await page.goto(base_url, wait_until="domcontentloaded", timeout=90000)
-    await page.wait_for_timeout(3500)
-    await expand_page(page)
+def walk_json(value: Any) -> Iterable[dict[str, Any]]:
+    if isinstance(value, dict):
+        yield value
+        for child in value.values():
+            yield from walk_json(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from walk_json(child)
 
-    candidates: list[tuple[str, str]] = []
-    anchors = page.locator("a[href]")
-    count = min(await anchors.count(), 1500)
-    allowed_host = urlparse(base_url).netloc.replace("www.", "")
 
-    for i in range(count):
-        anchor = anchors.nth(i)
+def events_from_jsonld(html: str, source: str) -> list[Event]:
+    soup = BeautifulSoup(html, "lxml")
+    results: list[Event] = []
+    for script in soup.select('script[type="application/ld+json"]'):
         try:
-            href = await anchor.get_attribute("href")
-            if not href:
+            payload = json.loads(script.string or script.get_text())
+        except (json.JSONDecodeError, TypeError):
+            continue
+        for item in walk_json(payload):
+            item_type = item.get("@type", "")
+            types = item_type if isinstance(item_type, list) else [item_type]
+            if not any("event" in str(t).lower() for t in types):
                 continue
-            url = urljoin(base_url, href)
-            host = urlparse(url).netloc.replace("www.", "")
-            if host and allowed_host not in host and source == "SESC":
-                continue
-            # Usa o card ancestral quando existir; senão, usa o próprio link.
-            text = ""
-            for selector in ("article", ".card", ".item", ".evento", ".event", "li", "a"):
-                loc = anchor.locator(f"xpath=ancestor-or-self::{selector if selector == 'article' or selector == 'li' or selector == 'a' else '*'}[contains(concat(' ', normalize-space(@class), ' '), ' {selector.lstrip('.')} ')][1]") if selector.startswith('.') else anchor.locator(f"xpath=ancestor-or-self::{selector}[1]")
-                if await loc.count():
-                    text = clean(await loc.first.inner_text(timeout=1200))
-                    if len(text) >= 20:
-                        break
-            if not text:
-                text = clean(await anchor.inner_text(timeout=1200))
-            if DATE_RE.search(text) and 15 <= len(text) <= 1000:
-                candidates.append((text, url))
+            event = make_event(
+                title=item.get("name", ""),
+                raw_date=str(item.get("startDate", "")),
+                raw_time=str(item.get("startDate", "")),
+                source=source,
+                link=item.get("url", SOURCES[source]),
+                description=item.get("description", ""),
+                location=location_from_json(item.get("location")),
+            )
+            if event:
+                results.append(event)
+    return results
+
+
+async def expand_page(page: Page, source: str) -> None:
+    await page.wait_for_timeout(2500)
+    for _ in range(7):
+        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        await page.wait_for_timeout(900)
+        buttons = page.get_by_text(re.compile(r"carregar mais|ver mais|mais eventos", re.I))
+        try:
+            if await buttons.count() > 0 and await buttons.first.is_visible():
+                await buttons.first.click(timeout=2500)
+                await page.wait_for_timeout(1200)
+            else:
+                break
         except Exception:
-            continue
-
-    # Fallback importante para a APPAI: o título e a data podem não estar dentro do mesmo link.
-    body_text = clean(await page.locator("body").inner_text())
-    lines = [clean(x) for x in body_text.splitlines() if clean(x)]
-    for idx, line in enumerate(lines):
-        if DATE_RE.search(line):
-            chunk = "\n".join(lines[max(0, idx - 1):idx + 2])
-            candidates.append((chunk, base_url))
-
-    return candidates
+            break
+    await page.evaluate("window.scrollTo(0, 0)")
 
 
-def candidates_to_events(candidates: Iterable[tuple[str, str]], source: str, base_url: str) -> list[Event]:
+async def events_from_dom(page: Page, source: str) -> list[Event]:
+    base = SOURCES[source]
+    records = await page.locator("a[href]").evaluate_all(
+        """
+        (anchors) => anchors.map(a => {
+          const box = a.closest('article, li, .card, [class*="card"], [class*="event"], [class*="program"], .elementor-widget') || a.parentElement;
+          const text = (box?.innerText || a.innerText || '').replace(/\\s+/g, ' ').trim();
+          const titleNode = box?.querySelector('h1,h2,h3,h4,h5,strong,.title,[class*="title"]');
+          return {
+            href: a.href,
+            anchor: (a.innerText || a.getAttribute('aria-label') || '').replace(/\\s+/g, ' ').trim(),
+            title: (titleNode?.innerText || '').replace(/\\s+/g, ' ').trim(),
+            text,
+          };
+        })
+        """
+    )
+
     events: list[Event] = []
-    seen: set[tuple[str, str, str]] = set()
-    today = date.today()
-
-    for text, url in candidates:
-        lines = [clean(x) for x in text.splitlines() if clean(x)]
-        if not lines:
+    blocked_titles = {
+        "saiba mais", "ver mais", "leia mais", "programacao", "programação", "inicio", "início",
+        "instagram", "facebook", "youtube", "fale com a gente", "buscar", "limpar busca",
+    }
+    for record in records:
+        href = record.get("href", "")
+        text = clean_text(record.get("text", ""), 900)
+        title = clean_text(record.get("title") or record.get("anchor"), 180)
+        if not href or not text or normalize(title) in {normalize(x) for x in blocked_titles}:
             continue
-        date_idx = next((i for i, line in enumerate(lines) if DATE_RE.search(line) or parse_date(line)), -1)
-        if date_idx < 0:
+        if len(text) < 20 or len(title) < 3:
             continue
-        event_date = parse_date(lines[date_idx]) or parse_date(text)
-        if not event_date or event_date < today:
+        if urlparse(href).netloc and urlparse(href).netloc not in urlparse(base).netloc:
             continue
-
-        title_candidates = [x for x in lines[:date_idx + 1] if not DATE_RE.search(x) and len(x) >= 3]
-        title = clean(title_candidates[-1] if title_candidates else lines[0])
-        title = re.sub(r"^(saiba mais|confira|ver detalhes)\s*", "", title, flags=re.I)
-        if not title or len(title) > 180 or title.lower() in {"programação", "programacao", "eventos"}:
+        event_date = extract_date_from_text(text)
+        if not event_date:
             continue
-
-        location = likely_location(lines, date_idx)
-        cat = category(text)
-        key = (slug(title), event_date.isoformat(), source)
-        if key in seen:
-            continue
-        seen.add(key)
-        description = f"Evento publicado na programação oficial da {source}. Confirme disponibilidade, classificação, valores e regras no site oficial."
-        events.append(Event(
-            id=f"{source.lower()}-{event_date.isoformat()}-{slug(title)}",
-            titulo=title,
-            data=event_date.isoformat(),
-            dataFim=None,
-            horario=extract_time(text),
-            local=location,
-            descricao=description,
-            fonte=source,
-            url=url if url.startswith("http") else base_url,
-            categoria=cat,
-            imagem=image_for(cat),
-        ))
-
-    events.sort(key=lambda e: (e.data, e.titulo.lower()))
-    return events[:MAX_EVENTS_PER_SOURCE]
-
-
-async def main() -> None:
-    all_events: list[Event] = []
-    errors: list[str] = []
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page(
-            viewport={"width": 1440, "height": 1200},
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
-            locale="pt-BR",
+        event = make_event(
+            title=title,
+            raw_date=event_date.isoformat(),
+            raw_time=text,
+            source=source,
+            link=href,
+            description=text,
+            location="",
         )
-        for source, url in SOURCES.items():
-            try:
-                candidates = await collect_candidates(page, source, url)
-                events = candidates_to_events(candidates, source, url)
-                print(f"{source}: {len(candidates)} candidatos, {len(events)} eventos válidos")
-                all_events.extend(events)
-            except Exception as exc:
-                errors.append(f"{source}: {exc}")
-                print(f"Erro em {source}: {exc}")
-        await browser.close()
+        if event:
+            events.append(event)
+    return events
 
-    # Preserva a agenda anterior se os dois sites falharem no mesmo dia.
-    if not all_events and OUTPUT.exists():
-        previous = json.loads(OUTPUT.read_text(encoding="utf-8"))
-        previous["ultimaTentativa"] = datetime.now().astimezone().isoformat(timespec="seconds")
-        previous["erros"] = errors or ["Nenhum evento futuro foi identificado."]
-        OUTPUT.write_text(json.dumps(previous, ensure_ascii=False, indent=2), encoding="utf-8")
-        return
 
-    # Remove duplicados e ordena pelo evento mais próximo.
+async def collect_source(browser: Browser, source: str, url: str) -> list[Event]:
+    page = await browser.new_page(
+        viewport={"width": 1440, "height": 1100},
+        locale="pt-BR",
+        user_agent=(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
+        ),
+    )
+    try:
+        print(f"Consultando {source}: {url}")
+        await page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+        try:
+            await page.wait_for_load_state("networkidle", timeout=15_000)
+        except PlaywrightTimeoutError:
+            pass
+        await expand_page(page, source)
+        html = await page.content()
+        events = events_from_jsonld(html, source)
+        events.extend(await events_from_dom(page, source))
+        print(f"{source}: {len(events)} registros candidatos")
+        return deduplicate(events)
+    finally:
+        await page.close()
+
+
+def deduplicate(events: Iterable[Event]) -> list[Event]:
     unique: dict[tuple[str, str, str], Event] = {}
-    for event in all_events:
-        unique[(slug(event.titulo), event.data, event.fonte)] = event
-    ordered = sorted(unique.values(), key=lambda e: (e.data, e.titulo.lower()))
+    for event in events:
+        key = (event.fonte, normalize(event.titulo), event.data)
+        current = unique.get(key)
+        if current is None or len(event.descricao) > len(current.descricao):
+            unique[key] = event
+    return list(unique.values())
+
+
+def load_existing() -> list[Event]:
+    if not OUTPUT.exists():
+        return []
+    try:
+        payload = json.loads(OUTPUT.read_text(encoding="utf-8"))
+        items = payload.get("eventos", payload) if isinstance(payload, dict) else payload
+        results = []
+        for item in items:
+            event_date = parse_date(str(item.get("data") or item.get("date") or ""))
+            if not event_date or event_date < date.today():
+                continue
+            source = clean_text(item.get("fonte") or item.get("source"), 20).upper()
+            if source not in SOURCES:
+                continue
+            event = make_event(
+                title=item.get("titulo") or item.get("title") or "",
+                raw_date=event_date.isoformat(),
+                raw_time=item.get("horario") or item.get("time") or "",
+                source=source,
+                link=item.get("link") or item.get("url") or SOURCES[source],
+                description=item.get("descricao") or item.get("description") or "",
+                location=item.get("local") or item.get("location") or "",
+            )
+            if event:
+                results.append(event)
+        return results
+    except Exception as exc:
+        print(f"Aviso: não foi possível ler a agenda existente: {exc}", file=sys.stderr)
+        return []
+
+
+async def main() -> int:
+    existing = load_existing()
+    collected: dict[str, list[Event]] = {}
+    failures: list[str] = []
+
+    async with async_playwright() as playwright:
+        browser = await playwright.chromium.launch(headless=True)
+        try:
+            for source, url in SOURCES.items():
+                try:
+                    collected[source] = await collect_source(browser, source, url)
+                    if not collected[source]:
+                        raise RuntimeError("nenhum evento futuro identificado")
+                except Exception as exc:
+                    failures.append(source)
+                    collected[source] = []
+                    print(f"Falha em {source}: {exc}", file=sys.stderr)
+        finally:
+            await browser.close()
+
+    final_events: list[Event] = []
+    for source in SOURCES:
+        source_events = collected[source]
+        if source_events:
+            final_events.extend(source_events)
+        else:
+            preserved = [event for event in existing if event.fonte == source]
+            final_events.extend(preserved)
+            if preserved:
+                print(f"{source}: preservados {len(preserved)} eventos da execução anterior")
+
+    final_events = deduplicate(final_events)
+    final_events.sort(key=lambda event: (event.data, event.horario or "23:59", event.titulo.lower()))
+    final_events = final_events[:80]
+
+    if not final_events and failures:
+        print("Nenhuma fonte pôde ser atualizada e não há agenda anterior para preservar.", file=sys.stderr)
+        return 1
+
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "atualizadoEm": datetime.now().astimezone().isoformat(timespec="seconds"),
-        "observacao": "Informações coletadas das páginas oficiais. Imagens meramente ilustrativas.",
-        "erros": errors,
-        "eventos": [asdict(event) for event in ordered],
+        "fontes": list(SOURCES),
+        "imagemAviso": "As imagens são meramente ilustrativas. Confirme os dados no site oficial.",
+        "eventos": [event.compatible_dict() for event in final_events],
     }
-    OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"Agenda salva em {OUTPUT.relative_to(ROOT)} com {len(final_events)} eventos.")
+    if failures:
+        print("Fontes preservadas por falha: " + ", ".join(failures))
+    return 0
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    raise SystemExit(asyncio.run(main()))
