@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1f5fa8" />
+  <title>Viver Bem | Escola Gota de Mel</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-mark">🌼</div>
+    <div>
+      <h1>Viver Bem</h1>
+      <p>Escola Gota de Mel</p>
+    </div>
+  </header>
+
+  <main id="app" class="app-shell">
+    <section id="home" class="page active" aria-labelledby="home-title">
+      <div class="greeting">
+        <span id="greetingText">Olá, equipe!</span>
+        <small id="todayText"></small>
+      </div>
+
+      <article class="daily-card highlight">
+        <span class="eyebrow">🌼 Momento Gota de Mel</span>
+        <h2 id="home-title">Mensagem do dia</h2>
+        <blockquote id="dailyMessage"></blockquote>
+        <p class="pause-note">💛 Desejamos uma excelente pausa!</p>
+      </article>
+
+      <h2 class="section-title">Como você quer aproveitar seus 15 minutos?</h2>
+      <div class="home-grid">
+        <button class="nav-card" data-target="respirar"><span>🧘</span><strong>Respirar</strong><small>2 a 5 minutos</small></button>
+        <button class="nav-card" data-target="alongar"><span>🤸</span><strong>Alongar</strong><small>Movimentos rápidos</small></button>
+        <button class="nav-card" data-target="musica"><span>🎵</span><strong>Ouvir música</strong><small>Escolha seu estilo</small></button>
+        <button class="nav-card" data-target="saude"><span>💧</span><strong>Cuidar da saúde</strong><small>Dicas práticas</small></button>
+        <button class="nav-card" data-target="humor"><span>😊</span><strong>Humor do dia</strong><small>Meme e piada</small></button>
+        <button class="nav-card" data-target="desafio"><span>🧩</span><strong>Desafio do dia</strong><small>Exercite a mente</small></button>
+        <button class="nav-card wide" data-target="beneficios"><span>🎁</span><strong>Benefícios</strong><small>APPAI, Wellhub e ações</small></button>
+      </div>
+    </section>
+
+    <section id="respirar" class="page">
+      <button class="back-button" data-target="home">← Voltar</button>
+      <h2>🧘 Respirar</h2>
+      <p class="intro">Escolha uma prática e acompanhe o ritmo com calma.</p>
+      <div class="content-list">
+        <article class="content-card"><h3>Respiração quadrada — 2 min</h3><p>Inspire por 4 segundos, segure por 4, expire por 4 e permaneça sem ar por 4. Repita devagar.</p><button class="timer-button" data-seconds="120">Iniciar 2 minutos</button></article>
+        <article class="content-card"><h3>Respiração profunda — 3 min</h3><p>Inspire pelo nariz expandindo o abdômen. Solte o ar lentamente pela boca, relaxando os ombros.</p><button class="timer-button" data-seconds="180">Iniciar 3 minutos</button></article>
+        <article class="content-card"><h3>Relaxamento rápido — 5 min</h3><p>Feche os olhos, solte a mandíbula, abaixe os ombros e observe a respiração sem tentar controlá-la.</p><button class="timer-button" data-seconds="300">Iniciar 5 minutos</button></article>
+      </div>
+      <div id="timerBox" class="timer-box hidden"><strong id="timerDisplay">02:00</strong><p>Respire com calma.</p><button id="stopTimer">Encerrar</button></div>
+    </section>
+
+    <section id="alongar" class="page">
+      <button class="back-button" data-target="home">← Voltar</button>
+      <h2>🤸 Alongar</h2>
+      <p class="intro">Faça os movimentos sem forçar e interrompa se sentir dor.</p>
+      <div class="content-list">
+        <article class="content-card"><h3>Pescoço</h3><p>Incline a cabeça para um lado, mantendo os ombros relaxados. Segure 15 segundos e troque.</p></article>
+        <article class="content-card"><h3>Ombros</h3><p>Faça círculos lentos com os ombros: 8 para trás e 8 para frente.</p></article>
+        <article class="content-card"><h3>Punhos e mãos</h3><p>Estenda um braço, palma para frente, e puxe suavemente os dedos para trás. Troque o lado.</p></article>
+        <article class="content-card"><h3>Coluna</h3><p>Em pé, apoie as mãos na cintura e leve o peito suavemente para frente, sem jogar a cabeça para trás.</p></article>
+        <article class="content-card"><h3>Pernas</h3><p>Apoie-se, dobre um joelho e aproxime o calcanhar do glúteo. Segure 20 segundos e troque.</p></article>
+        <article class="content-card"><h3>Corpo inteiro</h3><p>Eleve os braços, entrelace os dedos e alongue o corpo para cima por 20 segundos.</p></article>
+      </div>
+    </section>
+
+    <section id="musica" class="page">
+      <button class="back-button" data-target="home">← Voltar</button>
+      <h2>🎵 Música para o seu momento</h2>
+      <p class="intro">Escolha um estilo. Os botões abrem uma busca de playlist no Spotify.</p>
+      <div class="music-grid" id="musicGrid"></div>
+    </section>
+
+    <section id="saude" class="page">
+      <button class="back-button" data-target="home">← Voltar</button>
+      <h2>💧 Cuidar da saúde</h2>
+      <article class="daily-card"><span class="eyebrow">Dica do dia</span><p id="healthTip"></p></article>
+      <div class="content-list">
+        <article class="content-card"><h3>💧 Hidratação</h3><p>Mantenha uma garrafa por perto e beba água em pequenos goles ao longo do expediente.</p></article>
+        <article class="content-card"><h3>🥗 Alimentação</h3><p>Prefira uma pausa com alimentos leves, especialmente frutas, iogurte ou pequenas porções.</p></article>
+        <article class="content-card"><h3>😴 Sono</h3><p>Tente manter horários regulares para dormir e reduza o uso de telas pouco antes de deitar.</p></article>
+        <article class="content-card"><h3>💺 Ergonomia</h3><p>Alterne posturas, evite permanecer muito tempo na mesma posição e mantenha os ombros relaxados.</p></article>
+        <article class="content-card"><h3>🧠 Saúde mental</h3><p>Reconheça sinais de cansaço e sobrecarga. Pausas breves ajudam, mas não substituem apoio profissional quando necessário.</p></article>
+      </div>
+    </section>
+
+    <section id="humor" class="page">
+      <button class="back-button" data-target="home">← Voltar</button>
+      <h2>😊 Humor do dia</h2>
+      <article class="daily-card meme-card"><span class="eyebrow">😂 Meme do dia</span><div id="memeText" class="meme-text"></div></article>
+      <article class="daily-card"><span class="eyebrow">🤣 Piada do dia</span><p id="jokeText"></p></article>
+      <p class="disclaimer">Conteúdo leve, respeitoso e adequado ao ambiente de trabalho.</p>
+    </section>
+
+    <section id="desafio" class="page">
+      <button class="back-button" data-target="home">← Voltar</button>
+      <h2>🧩 Desafio do dia</h2>
+      <article class="daily-card challenge-card"><span class="eyebrow">Desafio de hoje</span><p id="challengeText"></p><button id="revealAnswer">Ver resposta</button><p id="challengeAnswer" class="answer hidden"></p></article>
+    </section>
+
+    <section id="beneficios" class="page">
+      <button class="back-button" data-target="home">← Voltar</button>
+      <h2>🎁 Benefícios do colaborador</h2>
+      <div class="content-list">
+        <a class="content-card link-card" href="https://www.appai.org.br/" target="_blank" rel="noopener"><h3>💙 APPAI</h3><p>Acesse informações sobre benefícios, serviços, cultura, lazer e saúde.</p><span>Abrir site →</span></a>
+        <article class="content-card"><h3>🏋️ Wellhub</h3><p>Consulte as condições de adesão e as opções disponíveis para atividade física e bem-estar.</p></article>
+        <article class="content-card"><h3>🎓 Capacitações</h3><p>Consulte a secretaria para informações sobre cursos, palestras e ações internas.</p></article>
+        <article class="content-card"><h3>❤️ Programa Viver Bem</h3><p>Ações de qualidade de vida, pausas conscientes e promoção do bem-estar no trabalho.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navegação principal">
+    <button data-target="home">🏠<span>Início</span></button>
+    <button data-target="respirar">🧘<span>Respirar</span></button>
+    <button data-target="alongar">🤸<span>Alongar</span></button>
+    <button data-target="humor">😊<span>Humor</span></button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
