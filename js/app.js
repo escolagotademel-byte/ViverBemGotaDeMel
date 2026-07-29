@@ -1,1 +1,1 @@
-// Estrutura inicial do Viver Bem
+// Estrutura inicial

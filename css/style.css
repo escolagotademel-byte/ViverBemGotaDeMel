@@ -1,5 +1,7 @@
-body{font-family:Arial,sans-serif;background:#f5f9ff;margin:0;padding:16px}
-header{text-align:center}
-.card{background:#fff;border-radius:16px;padding:16px;margin:16px 0;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.menu{display:grid;gap:12px}
-.menu a{text-decoration:none;background:#ffd54f;color:#333;padding:16px;border-radius:14px;font-weight:bold}
+body{font-family:Arial,sans-serif;background:#f5f7fb;margin:0;color:#333}
+header{background:#ffd54f;padding:24px;text-align:center}
+main{padding:16px;max-width:800px;margin:auto}
+.card{background:#fff;border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+h2{margin-top:0}
+ul{padding-left:20px}
+li{margin:8px 0}
