@@ -1,10 +1,16 @@
-CORREÇÃO FINAL DA AGENDA CULTURAL
+ALTERAÇÕES DOS JOGOS DE DESCOMPRESSÃO
 
-Substitua no GitHub estes três arquivos:
-1. scripts/atualizar_eventos.py
-2. .github/workflows/atualizar-agenda.yml
-3. data/eventos.json
+Substitua no repositório exatamente estes arquivos:
 
-O novo coletor não usa Playwright. Ele usa apenas requests, BeautifulSoup e lxml.
-O eventos.json já contém uma agenda inicial real para o site não ficar vazio.
-Após enviar os arquivos, faça Commit changes e execute Actions > Atualizar agenda cultural > Run workflow.
+pages/minijogos.html
+js/app.js
+css/style.css
+
+Alterações incluídas:
+- Novo jogo Jardim Tranquilo.
+- Arrume a Mesa ampliado com 24 objetos possíveis e 12 objetos sorteados por partida.
+- Nova disposição dos objetos a cada partida.
+- Harmonia das Cores com seis paletas diferentes e ordem embaralhada a cada partida.
+- Botões de novo jogo geram combinações diferentes.
+
+Depois de enviar os arquivos ao GitHub, faça Commit changes e atualize o site com Ctrl + F5.
