@@ -3,15 +3,10 @@ name: Atualizar agenda cultural
 on:
   workflow_dispatch:
   schedule:
-    # Executa diariamente às 10h15 UTC, equivalente a 7h15 no horário de Brasília.
-    - cron: "15 10 * * *"
+    - cron: "0 9 * * *"
 
 permissions:
   contents: write
-
-concurrency:
-  group: atualizar-agenda-cultural
-  cancel-in-progress: false
 
 jobs:
   atualizar-eventos:
@@ -27,27 +22,20 @@ jobs:
           python-version: "3.12"
 
       - name: Instalar dependências
-  run: |
-    python -m pip install --upgrade pip
-    pip install requests beautifulsoup4 python-dateutil dateparser lxml
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 python-dateutil dateparser lxml
 
       - name: Consultar APPAI e SESC
         run: python scripts/atualizar_eventos.py
 
       - name: Verificar alterações
-        id: verificar
-        run: |
-          if git diff --quiet -- data/eventos.json; then
-            echo "alterado=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "alterado=true" >> "$GITHUB_OUTPUT"
-          fi
+        run: git status
 
       - name: Salvar agenda atualizada
-        if: steps.verificar.outputs.alterado == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/eventos.json
-          git commit -m "Atualiza agenda cultural automaticamente"
+          git diff --cached --quiet || git commit -m "Atualizar agenda cultural"
           git push
