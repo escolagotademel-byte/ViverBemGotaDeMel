@@ -76,25 +76,60 @@ def norm(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", value).strip()
 
 
-def category(text: str) -> str:
-    n = norm(text)
+def category(text: str, source: str = "", hint: str = "") -> str:
+    """Classifica o evento priorizando a categoria publicada pela fonte.
+
+    Quando a APPAI não informa uma categoria clara, usamos teatro como padrão,
+    pois a agenda Bom Espetáculo é majoritariamente formada por peças e
+    apresentações cênicas.
+    """
+    combined = norm(f"{hint} {text}")
+    hint_normalized = norm(hint)
+
+    explicit_hints = {
+        "teatro": "teatro",
+        "circo": "teatro",
+        "comedia": "teatro",
+        "stand up": "teatro",
+        "musica": "musica",
+        "show": "musica",
+        "danca": "danca",
+        "audiovisual": "cinema",
+        "cinema": "cinema",
+        "artes visuais": "exposicao",
+        "exposicao": "exposicao",
+        "infantil": "infantil",
+        "esporte": "esporte",
+    }
+    for label, cat in explicit_hints.items():
+        if label in hint_normalized:
+            return cat
+
     rules = [
-        ("teatro", ("teatro", "comedia", "stand up", "espetaculo", "peca")),
-        ("musica", ("musica", "show", "concerto", "samba", "forro", "jazz")),
-        ("danca", ("danca", "ballet", "bale")),
-        ("cinema", ("cinema", "audiovisual", "filme")),
-        ("exposicao", ("artes visuais", "exposicao", "mostra")),
+        ("teatro", (
+            "teatro", "comedia", "stand up", "standup", "espetaculo",
+            "peca", "monologo", "dramaturgia", "circo", "palhaco",
+            "atriz", "ator", "cena", "musical infantil", "broadway",
+        )),
+        ("musica", (
+            "musica", "show", "concerto", "samba", "forro", "jazz",
+            "mpb", "orquestra", "banda", "cantor", "cantora", "festival musical",
+        )),
+        ("danca", ("danca", "ballet", "bale", "coreografia")),
+        ("cinema", ("cinema", "audiovisual", "filme", "documentario", "sessao")),
+        ("exposicao", ("artes visuais", "exposicao", "mostra", "galeria", "museu")),
         ("infantil", ("infantil", "crianca", "cinderela", "moana", "mickey", "porquinhos")),
-        ("esporte", ("esporte", "corrida", "futebol", "volei")),
+        ("esporte", ("esporte", "corrida", "futebol", "volei", "atividade fisica")),
     ]
     for cat, words in rules:
-        if any(w in n for w in words):
+        if any(word in combined for word in words):
             return cat
-    return "cultura"
+
+    return "teatro" if source.upper() == "APPAI" else "cultura"
 
 
-def event(title: str, d: date, source: str, place: str, link: str, desc: str = "", time: str = "") -> Event:
-    cat = category(f"{title} {desc}")
+def event(title: str, d: date, source: str, place: str, link: str, desc: str = "", time: str = "", category_hint: str = "") -> Event:
+    cat = category(f"{title} {desc}", source=source, hint=category_hint)
     key = hashlib.sha1(f"{source}|{norm(title)}|{d.isoformat()}|{norm(place)}".encode()).hexdigest()[:12]
     return Event(
         id=f"{source.lower()}-{key}", titulo=clean(title, 180), data=d.isoformat(), horario=time,
@@ -221,9 +256,16 @@ def collect_sesc() -> list[Event]:
         if anchor and anchor.get("href"):
             href = urljoin(SOURCES["SESC"], anchor["href"])
 
+        category_hint = ""
+        for label in ("TEATRO", "CIRCO", "MÚSICA", "MUSICA", "DANÇA", "DANCA", "AUDIOVISUAL", "ARTES VISUAIS", "EXPOSIÇÃO", "EXPOSICAO", "INFANTIL", "ESPORTE", "SHOW"):
+            if norm(label) in norm(after):
+                category_hint = label
+                break
+
         found.append(event(
             title, d, "SESC", place, href,
-            f"{title}. Programação cultural do Sesc RJ. Confirme horários, ingressos e possíveis alterações no site oficial."
+            f"{title}. Programação cultural do Sesc RJ. Confirme horários, ingressos e possíveis alterações no site oficial.",
+            category_hint=category_hint,
         ))
 
     return dedupe(found)

@@ -1,16 +1,20 @@
-ALTERAÇÕES DOS JOGOS DE DESCOMPRESSÃO
+ALTERAÇÕES DA AGENDA CULTURAL
 
-Substitua no repositório exatamente estes arquivos:
+Substitua no GitHub somente estes arquivos, mantendo as pastas:
 
-pages/minijogos.html
-js/app.js
-css/style.css
+1. css/style.css
+2. scripts/atualizar_eventos.py
 
-Alterações incluídas:
-- Novo jogo Jardim Tranquilo.
-- Arrume a Mesa ampliado com 24 objetos possíveis e 12 objetos sorteados por partida.
-- Nova disposição dos objetos a cada partida.
-- Harmonia das Cores com seis paletas diferentes e ordem embaralhada a cada partida.
-- Botões de novo jogo geram combinações diferentes.
+O que mudou:
+- APPAI: selo/card pequeno em laranja.
+- SESC: selo/card pequeno em azul.
+- A cor também foi aplicada às identificações da página completa e da janela de detalhes.
+- A classificação passa a aproveitar a categoria publicada pelo SESC.
+- Termos como peça, espetáculo, comédia, stand-up, monólogo, circo e dramaturgia passam para Teatro.
+- Eventos da APPAI sem categoria identificável passam a usar Teatro como padrão, em vez de Cultura.
+- Música, dança, cinema, exposição, infantil e esporte continuam com categorias próprias quando identificados.
 
-Depois de enviar os arquivos ao GitHub, faça Commit changes e atualize o site com Ctrl + F5.
+IMPORTANTE:
+Depois de substituir os arquivos, abra a aba Actions do GitHub e execute o workflow
+"Atualizar agenda cultural" para recriar data/eventos.json com a nova divisão.
+A alteração das cores aparece após o GitHub Pages terminar a publicação.
