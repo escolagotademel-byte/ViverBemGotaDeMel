@@ -1,13 +1,2 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const triggers = document.querySelectorAll(".accordion-trigger");
-
-  triggers.forEach((trigger) => {
-    trigger.addEventListener("click", () => {
-      const content = document.getElementById(trigger.getAttribute("aria-controls"));
-      const isOpen = trigger.getAttribute("aria-expanded") === "true";
-
-      trigger.setAttribute("aria-expanded", String(!isOpen));
-      content.classList.toggle("open", !isOpen);
-    });
-  });
-});
+const frases=["Uma pausa também é cuidado.","Seu bem-estar merece espaço na rotina.","Respire fundo: você não precisa resolver tudo de uma vez.","Pequenos gestos de cuidado transformam o dia.","Você faz diferença todos os dias.","Desacelerar também é seguir em frente.","Cuide de si com o mesmo carinho que oferece aos outros.","Hoje, escolha falar consigo com gentileza.","Seu esforço merece reconhecimento.","Descansar é parte do caminho.","Um minuto de calma pode mudar o restante do dia.","Valorize as pequenas conquistas.","Seu corpo também precisa ser ouvido.","Gentileza consigo é uma forma de força.","Faça uma pausa, alongue-se e recomece.","Você não precisa dar conta de tudo sozinho.","O cuidado começa nos pequenos hábitos.","Permita-se viver o momento presente.","Cada dia oferece uma nova possibilidade.","Acolha seus sentimentos sem julgamento.","Seu ritmo também é válido.","Respire: você está fazendo o melhor que pode.","Uma rotina mais leve começa com uma escolha.","Compartilhar também alivia.","Cultive pensamentos que façam bem.","O descanso renova a criatividade.","Seu trabalho é importante, e você também.","Celebre o que deu certo hoje.","Cuidar da mente é cuidar da vida.","Há força na calma.","Cuidar de quem cuida faz toda a diferença."];
+document.addEventListener("DOMContentLoaded",()=>{const triggers=document.querySelectorAll(".accordion-trigger");triggers.forEach(t=>t.addEventListener("click",()=>{const c=document.getElementById(t.getAttribute("aria-controls"));const open=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!open));c.classList.toggle("open",!open)}));const quote=document.querySelector("[data-daily-quote]");const date=document.querySelector("[data-daily-date]");if(quote){const now=new Date();quote.textContent=frases[(now.getDate()-1)%frases.length];if(date)date.textContent=now.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"})}const breath=document.querySelector("[data-breath]");const start=document.querySelector("[data-start-breath]");if(breath&&start){let timer;start.addEventListener("click",()=>{clearInterval(timer);let inhale=true;breath.textContent="Inspire";breath.classList.add("inhale");timer=setInterval(()=>{inhale=!inhale;breath.textContent=inhale?"Inspire":"Expire";breath.classList.toggle("inhale",inhale)},4000)})}});
