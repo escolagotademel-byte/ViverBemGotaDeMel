@@ -1,0 +1,10 @@
+ATUALIZAÇÃO — RECEITAS E ALONGAMENTOS
+
+1. A página pages/receitas.html agora carrega data/receitas.json.
+2. O script scripts/atualizar_receitas.py consulta a seção Receitas Fáceis do TudoGostoso.
+3. O GitHub Actions atualiza agenda cultural e receitas diariamente.
+4. Se a consulta falhar, o JSON já existente é preservado como conteúdo de reserva.
+5. As receitas aparecem sem categorias, com foto, título, resumo, fonte e botão para a publicação original.
+6. As correções existentes das imagens de alongamento foram preservadas.
+
+Para testar localmente, abra o projeto com Live Server. O navegador pode bloquear fetch de JSON ao abrir o HTML diretamente pelo endereço file://.

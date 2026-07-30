@@ -1,0 +1,49 @@
+{
+  "fonte": "TudoGostoso",
+  "origem": "https://www.tudogostoso.com.br/noticias/cardapios/receitas-faceis",
+  "atualizado_em": "2026-07-29T21:30:00-03:00",
+  "receitas": [
+    {
+      "titulo": "Pizza de frigideira rápida e sem forno",
+      "resumo": "Uma opção prática para preparar um lanche gostoso sem forno, air fryer ou muita bagunça.",
+      "imagem": "https://static.itdg.com.br/images/200-160/555caaa50d3a63479f11e2656e04f623/pizza-alta.jpg",
+      "url": "https://www.tudogostoso.com.br/noticias/cardapios/receitas-faceis",
+      "fonte": "TudoGostoso"
+    },
+    {
+      "titulo": "Biscoito de queijo com 3 ingredientes",
+      "resumo": "Um petisco caseiro leve e saboroso, sem farinha de trigo e pronto em poucos minutos.",
+      "imagem": "https://static.itdg.com.br/images/200-160/d107d54c44ad1247db9ce677fd40c05c/biscoito-assado-queijo2.jpg",
+      "url": "https://www.tudogostoso.com.br/noticias/cardapios/receitas-faceis",
+      "fonte": "TudoGostoso"
+    },
+    {
+      "titulo": "Abobrinha refogada para o almoço",
+      "resumo": "Um acompanhamento barato, saudável e rápido para servir com arroz, feijão, carnes ou na marmita.",
+      "imagem": "https://static.itdg.com.br/images/200-160/017ae6eed2a313774ac9e074121851a8/shutterstock-1730445865.jpg",
+      "url": "https://www.tudogostoso.com.br/noticias/cardapios/receitas-faceis",
+      "fonte": "TudoGostoso"
+    },
+    {
+      "titulo": "Cookie de banana com aveia",
+      "resumo": "Uma receita fácil, saudável e saborosa para o lanche, que também pode ser preparada com as crianças.",
+      "imagem": "",
+      "url": "https://www.tudogostoso.com.br/noticias/cardapios/receitas-faceis",
+      "fonte": "TudoGostoso"
+    },
+    {
+      "titulo": "Pão de queijo na frigideira",
+      "resumo": "Uma ideia simples e econômica para um café da manhã ou lanche rápido, com recheio à sua escolha.",
+      "imagem": "",
+      "url": "https://www.tudogostoso.com.br/noticias/cardapios/receitas-faceis",
+      "fonte": "TudoGostoso"
+    },
+    {
+      "titulo": "Macarrão ao alho e óleo",
+      "resumo": "Um jantar fácil para os dias corridos, feito com ingredientes básicos e que aceita complementos simples.",
+      "imagem": "",
+      "url": "https://www.tudogostoso.com.br/noticias/cardapios/receitas-faceis",
+      "fonte": "TudoGostoso"
+    }
+  ]
+}
