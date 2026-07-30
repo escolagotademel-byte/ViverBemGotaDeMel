@@ -1,0 +1,6 @@
+CORREÇÃO DAS IMAGENS DE ALONGAMENTO
+
+- Imagens ampliadas em alta resolução para exibição mais nítida.
+- Removida a altura fixa que cortava as figuras no celular.
+- As imagens agora mantêm a proporção completa em qualquer largura de tela.
+- A fonte escolhida para as receitas permanece TudoGostoso, sem categorias.
