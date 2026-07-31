@@ -1,35 +1,40 @@
 /* Estilos exclusivos da página de alongamentos.
-   Este arquivo evita que alterações no CSS geral aumentem ou deformem as imagens. */
+   Mantêm as ilustrações compactas e protegidas de alterações no CSS geral. */
 
 .stretch-individual-page .stretch-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  width: min(100%, 980px);
+  gap: 16px;
+  width: min(100%, 940px);
   margin: 20px auto 0;
 }
 
 .stretch-individual-page .stretch-card {
   position: relative;
   display: grid;
-  grid-template-columns: 170px minmax(0, 1fr);
+  grid-template-columns: 132px minmax(0, 1fr);
   align-items: center;
-  gap: 18px;
+  gap: 16px;
   min-width: 0;
-  padding: 18px;
+  min-height: 168px;
+  padding: 16px;
   overflow: hidden;
+  cursor: default;
 }
 
 .stretch-individual-page .stretch-card > img {
-  display: block;
-  width: 100% !important;
-  max-width: 170px !important;
-  height: 190px !important;
-  max-height: 190px !important;
-  margin: 0 auto;
+  display: block !important;
+  width: 132px !important;
+  min-width: 0 !important;
+  max-width: 132px !important;
+  height: 142px !important;
+  min-height: 0 !important;
+  max-height: 142px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
   object-fit: contain !important;
-  object-position: center;
-  border-radius: 14px;
+  object-position: center !important;
+  border-radius: 12px;
   background: #fffdf7;
 }
 
@@ -38,49 +43,65 @@
 }
 
 .stretch-individual-page .stretch-copy h3 {
-  margin-top: 0;
+  margin: 0 0 7px;
+  font-size: 1.06rem;
+}
+
+.stretch-individual-page .stretch-copy p {
+  margin: 0;
+  font-size: .94rem;
+  line-height: 1.48;
 }
 
 .stretch-individual-page .stretch-number {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 9px;
+  left: 9px;
   z-index: 2;
 }
 
 @media (max-width: 760px) {
   .stretch-individual-page .stretch-list {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 13px;
   }
 
   .stretch-individual-page .stretch-card {
-    grid-template-columns: 122px minmax(0, 1fr);
+    grid-template-columns: 108px minmax(0, 1fr);
     gap: 13px;
-    padding: 14px;
+    min-height: 142px;
+    padding: 13px;
   }
 
   .stretch-individual-page .stretch-card > img {
-    max-width: 122px !important;
-    height: 145px !important;
-    max-height: 145px !important;
+    width: 108px !important;
+    max-width: 108px !important;
+    height: 116px !important;
+    max-height: 116px !important;
   }
 }
 
 @media (max-width: 430px) {
   .stretch-individual-page .stretch-card {
-    grid-template-columns: 105px minmax(0, 1fr);
+    grid-template-columns: 92px minmax(0, 1fr);
     gap: 11px;
+    min-height: 124px;
+    padding: 12px;
   }
 
   .stretch-individual-page .stretch-card > img {
-    max-width: 105px !important;
-    height: 128px !important;
-    max-height: 128px !important;
+    width: 92px !important;
+    max-width: 92px !important;
+    height: 102px !important;
+    max-height: 102px !important;
+  }
+
+  .stretch-individual-page .stretch-copy h3 {
+    font-size: 1rem;
   }
 
   .stretch-individual-page .stretch-copy p {
-    font-size: .91rem;
-    line-height: 1.42;
+    font-size: .88rem;
+    line-height: 1.4;
   }
 }
