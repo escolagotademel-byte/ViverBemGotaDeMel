@@ -1,7 +1,12 @@
-Substitua somente os arquivos e a pasta deste pacote, preservando os mesmos caminhos.
+ATUALIZAÇÃO — CAPAS AUTOMÁTICAS DOS LIVROS + ALONGAMENTOS
 
-IMPORTANTE:
-- O index.html restaura a Home original completa, com a Agenda Cultural no local original.
-- Não substitua o css/style.css: este pacote não contém CSS.
-- As capas agora são arquivos locais em assets/capas-livros e não dependem do Google Books.
-- Após enviar ao GitHub, use Ctrl+Shift+R para limpar o cache do navegador.
+Substitua somente:
+- js/livros.js
+- pages/alongamentos.html
+- css/alongamentos.css (arquivo novo)
+
+O que foi alterado:
+1. Livros: o sistema consulta automaticamente o Google Books e só seleciona livros cuja capa real esteja disponível e carregue corretamente. Mantém 3 gêneros diferentes e troca a seleção semanalmente.
+2. Alongamentos: foi criado um CSS exclusivo para controlar o tamanho das imagens, sem alterar a Home ou o CSS geral.
+
+Após publicar no GitHub Pages, use Ctrl + Shift + R para limpar o cache.
