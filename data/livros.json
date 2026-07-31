@@ -1,0 +1,62 @@
+[
+  [
+    {"titulo":"O Pequeno Príncipe","autor":"Antoine de Saint-Exupéry","genero":"Fábula filosófica","sinopse":"Um aviador encontra um pequeno príncipe vindo de outro planeta e, por meio de suas histórias, redescobre o valor da amizade, do cuidado e das coisas essenciais.","busca":"O Pequeno Príncipe Antoine de Saint-Exupéry"},
+    {"titulo":"Torto Arado","autor":"Itamar Vieira Junior","genero":"Literatura brasileira","sinopse":"Duas irmãs crescem em uma comunidade rural marcada por vínculos profundos, desigualdades e resistência, em uma narrativa sobre pertencimento e memória.","busca":"Torto Arado Itamar Vieira Junior"},
+    {"titulo":"Hábitos Atômicos","autor":"James Clear","genero":"Desenvolvimento pessoal","sinopse":"Uma abordagem prática para construir bons hábitos, abandonar padrões indesejados e transformar pequenas mudanças em resultados duradouros.","busca":"Hábitos Atômicos James Clear"}
+  ],
+  [
+    {"titulo":"Extraordinário","autor":"R. J. Palacio","genero":"Ficção contemporânea","sinopse":"A entrada de um menino com uma condição facial em uma nova escola revela desafios, amizades e aprendizados sobre empatia e gentileza.","busca":"Extraordinário R. J. Palacio"},
+    {"titulo":"O Poder do Hábito","autor":"Charles Duhigg","genero":"Psicologia e comportamento","sinopse":"O livro explica como os hábitos se formam e como podem ser compreendidos e transformados na vida pessoal e profissional.","busca":"O Poder do Hábito Charles Duhigg"},
+    {"titulo":"Quarto de Despejo","autor":"Carolina Maria de Jesus","genero":"Memórias e literatura brasileira","sinopse":"Diários que retratam com força e sensibilidade a vida de uma mulher negra, mãe e escritora na periferia de São Paulo.","busca":"Quarto de Despejo Carolina Maria de Jesus"}
+  ],
+  [
+    {"titulo":"A Biblioteca da Meia-Noite","autor":"Matt Haig","genero":"Ficção fantástica","sinopse":"Entre a vida e a morte, uma mulher visita uma biblioteca onde cada livro revela uma existência possível e novas formas de olhar para suas escolhas.","busca":"A Biblioteca da Meia-Noite Matt Haig"},
+    {"titulo":"Essencialismo","autor":"Greg McKeown","genero":"Produtividade e bem-estar","sinopse":"Uma reflexão prática sobre fazer menos, com mais intenção, eliminando excessos e concentrando energia no que realmente importa.","busca":"Essencialismo Greg McKeown"},
+    {"titulo":"Ponciá Vicêncio","autor":"Conceição Evaristo","genero":"Romance brasileiro","sinopse":"A trajetória de uma mulher negra atravessada por memória, migração, ancestralidade e busca de identidade.","busca":"Ponciá Vicêncio Conceição Evaristo"}
+  ],
+  [
+    {"titulo":"A Menina que Roubava Livros","autor":"Markus Zusak","genero":"Ficção histórica","sinopse":"Na Alemanha nazista, uma jovem encontra nos livros, nas palavras e nos afetos formas de enfrentar um mundo marcado pela guerra.","busca":"A Menina que Roubava Livros Markus Zusak"},
+    {"titulo":"Coragem de Ser Imperfeito","autor":"Brené Brown","genero":"Autoconhecimento","sinopse":"A autora discute vulnerabilidade, pertencimento e autenticidade, mostrando como aceitar imperfeições pode fortalecer relações e escolhas.","busca":"A Coragem de Ser Imperfeito Brené Brown"},
+    {"titulo":"Capitães da Areia","autor":"Jorge Amado","genero":"Clássico brasileiro","sinopse":"Um grupo de meninos em situação de rua constrói laços de amizade e sobrevivência em uma Salvador marcada por desigualdades.","busca":"Capitães da Areia Jorge Amado"}
+  ],
+  [
+    {"titulo":"O Homem que Calculava","autor":"Malba Tahan","genero":"Ficção e matemática","sinopse":"Aventuras, enigmas e problemas matemáticos se misturam em uma narrativa leve sobre criatividade e raciocínio.","busca":"O Homem que Calculava Malba Tahan"},
+    {"titulo":"Talvez Você Deva Conversar com Alguém","autor":"Lori Gottlieb","genero":"Psicologia e memórias","sinopse":"Uma terapeuta narra histórias de seus pacientes e de seu próprio processo terapêutico, revelando a humanidade compartilhada em cada mudança.","busca":"Talvez Você Deva Conversar com Alguém Lori Gottlieb"},
+    {"titulo":"A Hora da Estrela","autor":"Clarice Lispector","genero":"Literatura brasileira","sinopse":"A história de Macabéa, jovem nordestina vivendo no Rio de Janeiro, conduz uma reflexão delicada sobre invisibilidade, identidade e existência.","busca":"A Hora da Estrela Clarice Lispector"}
+  ],
+  [
+    {"titulo":"Anne de Green Gables","autor":"L. M. Montgomery","genero":"Clássico juvenil","sinopse":"Uma menina imaginativa transforma a vida de uma pequena comunidade com sua espontaneidade, sensibilidade e desejo de pertencer.","busca":"Anne de Green Gables L. M. Montgomery"},
+    {"titulo":"Comunicação Não Violenta","autor":"Marshall B. Rosenberg","genero":"Relações humanas","sinopse":"Uma proposta de comunicação baseada em observação, sentimentos, necessidades e pedidos claros para construir relações mais respeitosas.","busca":"Comunicação Não Violenta Marshall Rosenberg"},
+    {"titulo":"Um Defeito de Cor","autor":"Ana Maria Gonçalves","genero":"Romance histórico brasileiro","sinopse":"Uma narrativa extensa e poderosa sobre a vida de uma mulher africana escravizada, sua resistência e sua busca por liberdade e família.","busca":"Um Defeito de Cor Ana Maria Gonçalves"}
+  ],
+  [
+    {"titulo":"O Jardim Secreto","autor":"Frances Hodgson Burnett","genero":"Clássico infantojuvenil","sinopse":"Ao descobrir um jardim abandonado, uma menina também encontra amizade, esperança e caminhos para transformar a si mesma e aos que a cercam.","busca":"O Jardim Secreto Frances Hodgson Burnett"},
+    {"titulo":"Ikigai","autor":"Héctor García e Francesc Miralles","genero":"Bem-estar e propósito","sinopse":"O livro reúne reflexões e hábitos associados a uma vida com propósito, presença, vínculos e atividades significativas.","busca":"Ikigai Héctor García Francesc Miralles"},
+    {"titulo":"Olhos d'Água","autor":"Conceição Evaristo","genero":"Contos brasileiros","sinopse":"Contos marcados por afeto, dor, resistência e memória retratam experiências de mulheres negras e comunidades periféricas.","busca":"Olhos d'Água Conceição Evaristo"}
+  ],
+  [
+    {"titulo":"A Elegância do Ouriço","autor":"Muriel Barbery","genero":"Romance filosófico","sinopse":"Duas personagens observadoras e improváveis revelam a beleza escondida no cotidiano e nos encontros que mudam nossa forma de ver o mundo.","busca":"A Elegância do Ouriço Muriel Barbery"},
+    {"titulo":"Mindset","autor":"Carol S. Dweck","genero":"Psicologia e educação","sinopse":"A autora explica como crenças sobre talento e aprendizagem influenciam escolhas, persistência e desenvolvimento ao longo da vida.","busca":"Mindset Carol Dweck"},
+    {"titulo":"O Auto da Compadecida","autor":"Ariano Suassuna","genero":"Teatro e comédia brasileira","sinopse":"Com humor popular e crítica social, João Grilo e Chicó enfrentam aventuras em uma história marcada por esperteza, fé e humanidade.","busca":"O Auto da Compadecida Ariano Suassuna"}
+  ],
+  [
+    {"titulo":"A Sociedade Literária e a Torta de Casca de Batata","autor":"Mary Ann Shaffer e Annie Barrows","genero":"Romance histórico epistolar","sinopse":"Cartas aproximam uma escritora de um grupo de leitores que encontrou nos livros uma forma de resistir e manter esperança durante a guerra.","busca":"A Sociedade Literária e a Torta de Casca de Batata"},
+    {"titulo":"A Arte de Fazer Acontecer","autor":"David Allen","genero":"Organização pessoal","sinopse":"Um método prático para organizar tarefas, compromissos e ideias, reduzindo sobrecarga mental e aumentando clareza.","busca":"A Arte de Fazer Acontecer David Allen"},
+    {"titulo":"Niketche","autor":"Paulina Chiziane","genero":"Romance moçambicano","sinopse":"Uma mulher confronta as estruturas afetivas e sociais de seu casamento e transforma dor em consciência, solidariedade e reinvenção.","busca":"Niketche Paulina Chiziane"}
+  ],
+  [
+    {"titulo":"O Conto da Aia","autor":"Margaret Atwood","genero":"Ficção distópica","sinopse":"Em uma sociedade autoritária, uma mulher luta para preservar memória, identidade e esperança diante do controle sobre seu corpo e sua vida.","busca":"O Conto da Aia Margaret Atwood"},
+    {"titulo":"O Jeito Harvard de Ser Feliz","autor":"Shawn Achor","genero":"Psicologia positiva","sinopse":"O autor apresenta estratégias para cultivar emoções positivas, fortalecer relações e melhorar a forma de lidar com desafios.","busca":"O Jeito Harvard de Ser Feliz Shawn Achor"},
+    {"titulo":"Dois Irmãos","autor":"Milton Hatoum","genero":"Romance brasileiro","sinopse":"Conflitos familiares, rivalidade e memória se entrelaçam em uma narrativa ambientada em Manaus.","busca":"Dois Irmãos Milton Hatoum"}
+  ],
+  [
+    {"titulo":"A Invenção de Hugo Cabret","autor":"Brian Selznick","genero":"Aventura ilustrada","sinopse":"Texto e imagem se unem na história de um menino, um autômato e um mistério ligado aos primórdios do cinema.","busca":"A Invenção de Hugo Cabret Brian Selznick"},
+    {"titulo":"As Coisas que Você Só Vê Quando Desacelera","autor":"Haemin Sunim","genero":"Reflexões e bem-estar","sinopse":"Textos curtos convidam a desacelerar, observar emoções e cuidar das relações com mais gentileza e presença.","busca":"As Coisas que Você Só Vê Quando Desacelera Haemin Sunim"},
+    {"titulo":"Marrom e Amarelo","autor":"Paulo Scott","genero":"Romance brasileiro contemporâneo","sinopse":"A trajetória de dois irmãos provoca reflexões sobre racismo, identidade, família e as diferentes formas de enfrentar injustiças.","busca":"Marrom e Amarelo Paulo Scott"}
+  ],
+  [
+    {"titulo":"A Vida Invisível de Addie LaRue","autor":"V. E. Schwab","genero":"Fantasia histórica","sinopse":"Após fazer um pacto para viver livre, uma jovem é condenada a ser esquecida por todos, até encontrar alguém que se lembra dela.","busca":"A Vida Invisível de Addie LaRue V. E. Schwab"},
+    {"titulo":"O Poder do Agora","autor":"Eckhart Tolle","genero":"Espiritualidade e presença","sinopse":"Uma reflexão sobre atenção ao presente, observação dos pensamentos e redução da identificação com preocupações constantes.","busca":"O Poder do Agora Eckhart Tolle"},
+    {"titulo":"Pequeno Manual Antirracista","autor":"Djamila Ribeiro","genero":"Ensaios e sociedade","sinopse":"Uma introdução clara a conceitos e práticas importantes para reconhecer e combater o racismo no cotidiano.","busca":"Pequeno Manual Antirracista Djamila Ribeiro"}
+  ]
+]

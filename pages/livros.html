@@ -1,1 +1,36 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f6c344"><title>Indicações de Livros | Viver Bem</title><link rel="stylesheet" href="../css/style.css"><script src="../js/app.js" defer></script></head><body><header class="page-topbar"><a class="back-link" href="../index.html" aria-label="Voltar">‹</a><div class="page-brand"><img class="mini-logo" src="../assets/logo-gota-de-mel.png" alt=""><div><h1>Indicações de Livros</h1><small>Viver Bem</small></div></div></header><main class="page-content"><section class="intro-card"><div class="intro-icon">📚</div><h2>Indicações de Livros</h2><p>Sugestões para aprender, relaxar e se inspirar.</p></section><section class="content-card"><h3>Bem-estar e hábitos</h3><ul><li><strong>O Poder do Hábito</strong> — Charles Duhigg.</li><li><strong>Essencialismo</strong> — Greg McKeown.</li></ul></section><section class="content-card"><h3>Leituras leves</h3><ul><li><strong>O Pequeno Príncipe</strong> — Antoine de Saint-Exupéry.</li><li><strong>Extraordinário</strong> — R. J. Palacio.</li></ul></section></main><footer>Escola Gota de Mel</footer></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6c344">
+  <title>Indicação de Livros | Viver Bem</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/livros.js" defer></script>
+</head>
+<body>
+  <header class="page-topbar">
+    <a class="back-link" href="../index.html" aria-label="Voltar">‹</a>
+    <div class="page-brand">
+      <img class="mini-logo" src="../assets/logo-gota-de-mel.png" alt="">
+      <div><h1>Indicação de Livros</h1><small>Viver Bem</small></div>
+    </div>
+  </header>
+
+  <main class="page-content recommendation-page">
+    <section class="intro-card recommendation-intro">
+      <div class="intro-icon">📚</div>
+      <p class="recommendation-kicker">✨ Seleção da Semana</p>
+      <h2>Indicação de Livros</h2>
+      <p>Três leituras de gêneros variados para inspirar, relaxar e ampliar horizontes.</p>
+      <p class="recommendation-period" id="periodo-semana" aria-live="polite"></p>
+    </section>
+
+    <section id="lista-livros" class="recommendation-grid" aria-live="polite">
+      <div class="recommendation-loading">Carregando indicações da semana…</div>
+    </section>
+  </main>
+
+  <footer>Escola Gota de Mel</footer>
+</body>
+</html>
