@@ -33,25 +33,36 @@
     periodo.textContent = `Indicações válidas de ${formato.format(inicio)} a ${formato.format(fim)}.`;
   }
 
+  function urlCapaSegura(url) {
+    const https = String(url || '').replace(/^http:/, 'https:');
+    if (!https) return '';
+    // O proxy evita bloqueios de hotlink das capas do Google Books no GitHub Pages.
+    return `https://images.weserv.nl/?url=${encodeURIComponent(https)}&w=520&h=760&fit=cover&output=webp`;
+  }
+
   async function buscarCapa(livro, imagem, fallback) {
-    const chave = `viverbem-capa-livro:${livro.busca}`;
+    const chave = `viverbem-capa-livro:v2:${livro.busca}`;
     const cache = localStorage.getItem(chave);
     if (cache) {
+      imagem.hidden = false;
+      fallback.hidden = true;
       imagem.src = cache;
       return;
     }
 
     try {
-      const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(livro.busca)}&maxResults=5&printType=books`;
-      const resposta = await fetch(url);
+      const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(livro.busca)}&maxResults=8&printType=books`;
+      const resposta = await fetch(url, { cache: 'force-cache' });
       if (!resposta.ok) throw new Error('Capa indisponível');
       const dados = await resposta.json();
-      const item = (dados.items || []).find(volume => volume.volumeInfo?.imageLinks);
-      const capa = item?.volumeInfo?.imageLinks?.thumbnail || item?.volumeInfo?.imageLinks?.smallThumbnail;
+      const item = (dados.items || []).find(volume => volume.volumeInfo?.imageLinks?.thumbnail || volume.volumeInfo?.imageLinks?.smallThumbnail);
+      const capaOriginal = item?.volumeInfo?.imageLinks?.thumbnail || item?.volumeInfo?.imageLinks?.smallThumbnail;
+      const capa = urlCapaSegura(capaOriginal);
       if (!capa) throw new Error('Capa não encontrada');
-      const segura = capa.replace(/^http:/, 'https:').replace('&zoom=1', '&zoom=2');
-      localStorage.setItem(chave, segura);
-      imagem.src = segura;
+      localStorage.setItem(chave, capa);
+      imagem.hidden = false;
+      fallback.hidden = true;
+      imagem.src = capa;
     } catch (erro) {
       imagem.hidden = true;
       fallback.hidden = false;
@@ -79,6 +90,7 @@
     const imagem = card.querySelector('.recommendation-cover');
     const fallback = card.querySelector('.recommendation-cover-fallback');
     imagem.addEventListener('error', () => {
+      localStorage.removeItem(`viverbem-capa-livro:v2:${livro.busca}`);
       imagem.hidden = true;
       fallback.hidden = false;
     }, { once: true });
