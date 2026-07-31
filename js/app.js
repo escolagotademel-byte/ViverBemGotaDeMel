@@ -120,30 +120,135 @@ document.addEventListener("DOMContentLoaded",()=>{
 })();
 
 
-// Jogos de descompressão — módulo independente e seguro para toque/celular.
+// Jogos de descompressão — fases automáticas, sem ranking e otimizadas para toque/celular.
 (()=>{
   const shuffle=(arr)=>{const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
   const choose=(arr,n)=>shuffle(arr).slice(0,n);
-  const setupSortGame=({rootSel,itemsSel,zonesSel,messageSel,resetSel,pool,count=10})=>{
-    const root=document.querySelector(rootSel); if(!root)return;
-    const tray=root.querySelector(itemsSel), zones=[...root.querySelectorAll(zonesSel)], msg=root.querySelector(messageSel), reset=root.querySelector(resetSel);
-    let selected=null,remaining=0;
-    const select=(btn)=>{root.querySelectorAll('.game-piece.selected').forEach(x=>x.classList.remove('selected'));selected=btn;btn.classList.add('selected');msg.textContent=`Agora toque em “${btn.dataset.label}”.`};
-    const newGame=()=>{selected=null;tray.innerHTML='';zones.forEach(z=>z.classList.remove('correct','wrong'));const items=choose(pool,Math.min(count,pool.length));remaining=items.length;items.forEach(item=>{const b=document.createElement('button');b.type='button';b.className='game-piece';b.dataset.type=item.type;b.dataset.label=item.label;b.innerHTML=`<span>${item.icon}</span><small>${item.name}</small>`;b.addEventListener('click',()=>select(b));tray.append(b)});msg.textContent='Escolha um objeto para começar.'};
-    zones.forEach(zone=>zone.addEventListener('click',()=>{if(!selected){msg.textContent='Primeiro toque em um objeto.';return}if(zone.dataset.accept===selected.dataset.type){zone.classList.add('correct');selected.classList.add('placed');selected.disabled=true;selected=null;remaining--;msg.textContent=remaining?`Muito bem! Faltam ${remaining}.`:'Tudo organizado. Respire e aprecie o resultado.'}else{zone.classList.add('wrong');setTimeout(()=>zone.classList.remove('wrong'),450);msg.textContent='Esse objeto combina melhor com outro espaço.'}}));
-    reset?.addEventListener('click',newGame);newGame();
+  const wait=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
+
+  const phaseBadge=(root)=>{
+    let badge=root.querySelector('.game-phase-badge');
+    if(!badge){badge=document.createElement('span');badge.className='game-phase-badge';root.querySelector('.game-title-row > div')?.append(badge)}
+    return badge;
   };
-  setupSortGame({rootSel:'[data-organize-game]',itemsSel:'[data-organize-items]',zonesSel:'.sort-zone',messageSel:'[data-organize-message]',resetSel:'[data-reset-organize]',count:12,pool:[
+
+  const celebrate=async(root,title,subtitle)=>{
+    root.classList.add('game-transitioning');
+    let overlay=root.querySelector('.game-celebration');
+    if(!overlay){overlay=document.createElement('div');overlay.className='game-celebration';overlay.setAttribute('aria-live','polite');root.append(overlay)}
+    overlay.innerHTML=`<div><strong>✨ ${title}</strong><span>${subtitle}</span></div>`;
+    overlay.classList.add('show');
+    await wait(1800);
+    overlay.classList.remove('show');
+    await wait(180);
+    root.classList.remove('game-transitioning');
+  };
+
+  const setupSortGame=({rootSel,itemsSel,zonesSel,messageSel,resetSel,pool,baseCount=8})=>{
+    const root=document.querySelector(rootSel); if(!root)return;
+    const tray=root.querySelector(itemsSel), zones=[...root.querySelectorAll(zonesSel)], msg=root.querySelector(messageSel), reset=root.querySelector(resetSel), badge=phaseBadge(root);
+    let selected=null,remaining=0,phase=1,locked=false;
+
+    const select=(btn)=>{
+      if(locked||btn.disabled)return;
+      root.querySelectorAll('.game-piece.selected').forEach(x=>x.classList.remove('selected'));
+      selected=btn;btn.classList.add('selected');msg.textContent=`Agora toque em “${btn.dataset.label}”.`;
+    };
+
+    const newPhase=()=>{
+      locked=false;selected=null;tray.innerHTML='';zones.forEach(z=>z.classList.remove('correct','wrong'));
+      const count=Math.min(baseCount+(phase-1)*2,pool.length);
+      const items=choose(pool,count);remaining=items.length;
+      badge.textContent=`Fase ${phase}`;
+      items.forEach(item=>{
+        const b=document.createElement('button');b.type='button';b.className='game-piece';b.dataset.type=item.type;b.dataset.label=item.label;
+        b.innerHTML=`<span>${item.icon}</span><small>${item.name}</small>`;b.addEventListener('click',()=>select(b));tray.append(b);
+      });
+      msg.textContent='Escolha um objeto para começar.';
+    };
+
+    const finishPhase=async()=>{
+      locked=true;msg.textContent='Fase concluída! Preparando a próxima…';
+      await celebrate(root,'Fase concluída!',`A fase ${phase+1} vai começar.`);
+      phase++;newPhase();
+    };
+
+    zones.forEach(zone=>zone.addEventListener('click',()=>{
+      if(locked)return;
+      if(!selected){msg.textContent='Primeiro toque em um objeto.';return}
+      if(zone.dataset.accept===selected.dataset.type){
+        zone.classList.add('correct');selected.classList.add('placed');selected.disabled=true;selected=null;remaining--;
+        if(remaining){msg.textContent=`Muito bem! Faltam ${remaining}.`}
+        else finishPhase();
+      }else{
+        zone.classList.add('wrong');setTimeout(()=>zone.classList.remove('wrong'),450);msg.textContent='Esse objeto combina melhor com outro espaço.';
+      }
+    }));
+
+    reset?.addEventListener('click',()=>{phase=1;newPhase()});newPhase();
+  };
+
+  setupSortGame({rootSel:'[data-organize-game]',itemsSel:'[data-organize-items]',zonesSel:'.sort-zone',messageSel:'[data-organize-message]',resetSel:'[data-reset-organize]',baseCount:8,pool:[
     {icon:'✏️',name:'Lápis',type:'papelaria',label:'Papelaria'},{icon:'🖊️',name:'Caneta',type:'papelaria',label:'Papelaria'},{icon:'📏',name:'Régua',type:'papelaria',label:'Papelaria'},{icon:'✂️',name:'Tesoura',type:'papelaria',label:'Papelaria'},{icon:'📎',name:'Clipes',type:'papelaria',label:'Papelaria'},{icon:'📒',name:'Caderno',type:'livros',label:'Livros'},{icon:'📚',name:'Livros',type:'livros',label:'Livros'},{icon:'📁',name:'Pasta',type:'livros',label:'Livros'},{icon:'💻',name:'Notebook',type:'tecnologia',label:'Tecnologia'},{icon:'🖱️',name:'Mouse',type:'tecnologia',label:'Tecnologia'},{icon:'📱',name:'Celular',type:'tecnologia',label:'Tecnologia'},{icon:'💡',name:'Luminária',type:'tecnologia',label:'Tecnologia'},{icon:'🪴',name:'Planta',type:'decoracao',label:'Decoração'},{icon:'🖼️',name:'Porta-retrato',type:'decoracao',label:'Decoração'},{icon:'🌼',name:'Flor',type:'decoracao',label:'Decoração'},{icon:'☕',name:'Caneca',type:'bebidas',label:'Bebidas'},{icon:'💧',name:'Água',type:'bebidas',label:'Bebidas'},{icon:'🧴',name:'Álcool em gel',type:'acessorios',label:'Acessórios'},{icon:'🎧',name:'Fone',type:'acessorios',label:'Acessórios'},{icon:'📌',name:'Grampeador',type:'acessorios',label:'Acessórios'}]});
-  setupSortGame({rootSel:'[data-garden-game]',itemsSel:'[data-garden-items]',zonesSel:'.garden-zone',messageSel:'[data-garden-message]',resetSel:'[data-reset-garden]',count:10,pool:[
+
+  setupSortGame({rootSel:'[data-garden-game]',itemsSel:'[data-garden-items]',zonesSel:'.garden-zone',messageSel:'[data-garden-message]',resetSel:'[data-reset-garden]',baseCount:6,pool:[
     {icon:'🌷',name:'Tulipa',type:'flores',label:'Flores'},{icon:'🌻',name:'Girassol',type:'flores',label:'Flores'},{icon:'🌸',name:'Flor',type:'flores',label:'Flores'},{icon:'🪴',name:'Vaso',type:'vasos',label:'Vasos'},{icon:'🏺',name:'Vaso alto',type:'vasos',label:'Vasos'},{icon:'🪨',name:'Pedra',type:'pedras',label:'Pedras'},{icon:'◽',name:'Seixo',type:'pedras',label:'Pedras'},{icon:'💧',name:'Regador',type:'cuidados',label:'Cuidados'},{icon:'🧤',name:'Luvas',type:'cuidados',label:'Cuidados'},{icon:'🌱',name:'Muda',type:'cuidados',label:'Cuidados'},{icon:'🏮',name:'Lanterna',type:'vasos',label:'Vasos'},{icon:'🪑',name:'Banco',type:'pedras',label:'Pedras'}]});
 
   const colorRoot=document.querySelector('[data-color-game]');
-  if(colorRoot){const palette=colorRoot.querySelector('[data-color-palette]'),sequence=colorRoot.querySelector('[data-color-sequence]'),msg=colorRoot.querySelector('[data-color-message]');let order=[],step=0;const families=[['#fde8ef','#f9b9cf','#f47da7','#df3e75','#9f1749'],['#e8f1ff','#b7d2ff','#79a8f5','#3f72cf','#244693'],['#eaf8e9','#bde7b9','#82c879','#4c9d4b','#28622d'],['#fff4dd','#ffdca1','#ffb95c','#e98522','#9f4b10'],['#f2eaff','#d4bdf7','#ad87e5','#7d55bd','#4b2d7f'],['#e8fbfa','#afe9e5','#6bcac4','#319d98','#17625f']];
-    const newColors=()=>{const colors=shuffle(families[Math.floor(Math.random()*families.length)]);order=[...colors].sort((a,b)=>{const lum=x=>{x=x.slice(1);return .2126*parseInt(x.slice(0,2),16)+.7152*parseInt(x.slice(2,4),16)+.0722*parseInt(x.slice(4,6),16)};return lum(b)-lum(a)});step=0;palette.innerHTML='';sequence.innerHTML='';colors.forEach(c=>{const b=document.createElement('button');b.type='button';b.className='color-piece';b.style.background=c;b.setAttribute('aria-label','Peça colorida');b.addEventListener('click',()=>{if(b.disabled)return;if(c===order[step]){b.disabled=true;b.classList.add('used');const dot=document.createElement('span');dot.style.background=c;sequence.append(dot);step++;msg.textContent=step===order.length?'Degradê concluído!':'Continue da mais clara para a mais escura.'}else{b.classList.add('wrong');setTimeout(()=>b.classList.remove('wrong'),400);msg.textContent='Tente uma cor um pouco mais clara.'}});palette.append(b)});msg.textContent='Comece pela peça mais clara.'};colorRoot.querySelector('[data-reset-colors]')?.addEventListener('click',newColors);newColors();}
+  if(colorRoot){
+    const palette=colorRoot.querySelector('[data-color-palette]'),sequence=colorRoot.querySelector('[data-color-sequence]'),msg=colorRoot.querySelector('[data-color-message]'),badge=phaseBadge(colorRoot);
+    let order=[],step=0,phase=1,locked=false;
+    const families=[['#fde8ef','#f9b9cf','#f47da7','#df3e75','#9f1749'],['#e8f1ff','#b7d2ff','#79a8f5','#3f72cf','#244693'],['#eaf8e9','#bde7b9','#82c879','#4c9d4b','#28622d'],['#fff4dd','#ffdca1','#ffb95c','#e98522','#9f4b10'],['#f2eaff','#d4bdf7','#ad87e5','#7d55bd','#4b2d7f'],['#e8fbfa','#afe9e5','#6bcac4','#319d98','#17625f']];
+    const lum=x=>{x=x.slice(1);return .2126*parseInt(x.slice(0,2),16)+.7152*parseInt(x.slice(2,4),16)+.0722*parseInt(x.slice(4,6),16)};
+    const finish=async()=>{locked=true;msg.textContent='Degradê concluído! Preparando a próxima fase…';await celebrate(colorRoot,'Fase concluída!',`Nova combinação em instantes.`);phase++;newColors()};
+    const newColors=()=>{
+      locked=false;badge.textContent=`Fase ${phase}`;
+      const family=families[Math.floor(Math.random()*families.length)];
+      const amount=Math.min(3+phase,5);const picked=family.slice(0,amount);const colors=shuffle(picked);
+      order=[...picked].sort((a,b)=>lum(b)-lum(a));step=0;palette.innerHTML='';sequence.innerHTML='';
+      colors.forEach(c=>{const b=document.createElement('button');b.type='button';b.className='color-piece';b.style.background=c;b.setAttribute('aria-label','Peça colorida');b.addEventListener('click',()=>{
+        if(locked||b.disabled)return;
+        if(c===order[step]){b.disabled=true;b.classList.add('used');const dot=document.createElement('span');dot.style.background=c;sequence.append(dot);step++;if(step===order.length)finish();else msg.textContent='Continue da mais clara para a mais escura.'}
+        else{b.classList.add('wrong');setTimeout(()=>b.classList.remove('wrong'),400);msg.textContent='Tente uma cor um pouco mais clara.'}
+      });palette.append(b)});msg.textContent='Comece pela peça mais clara.';
+    };
+    colorRoot.querySelector('[data-reset-colors]')?.addEventListener('click',()=>{phase=1;newColors()});newColors();
+  }
 
   const bubbleRoot=document.querySelector('[data-bubble-game]');
-  if(bubbleRoot){const board=bubbleRoot.querySelector('[data-bubble-board]'),msg=bubbleRoot.querySelector('[data-bubble-message]');const fill=()=>{board.innerHTML='';let left=24;for(let i=0;i<24;i++){const b=document.createElement('button');b.type='button';b.className='bubble';b.setAttribute('aria-label','Estourar bolha');b.style.setProperty('--size',`${42+Math.floor(Math.random()*26)}px`);b.addEventListener('click',()=>{if(b.classList.contains('popped'))return;b.classList.add('popped');left--;msg.textContent=left?`${left} bolhas restantes. Sem pressa.`:'Pronto. Faça uma respiração profunda.'});board.append(b)}msg.textContent='Uma bolha de cada vez.'};bubbleRoot.querySelector('[data-reset-bubbles]')?.addEventListener('click',fill);fill();}
+  if(bubbleRoot){
+    const board=bubbleRoot.querySelector('[data-bubble-board]'),msg=bubbleRoot.querySelector('[data-bubble-message]'),badge=phaseBadge(bubbleRoot);
+    let phase=1,left=0,locked=false;
+    const palettes=[['#79cfff','#819eea'],['#ffb3d1','#d98be7'],['#8fe0be','#64b99d'],['#ffd58f','#ff9b70']];
+
+    const finish=async()=>{locked=true;msg.textContent='Todas as bolhas foram estouradas!';await celebrate(bubbleRoot,'Fase concluída!',`Preparando a fase ${phase+1}.`);phase++;fill()};
+
+    const fill=()=>{
+      locked=false;board.innerHTML='';badge.textContent=`Fase ${phase}`;
+      const count=Math.min(18+(phase-1)*3,42);left=count;
+      const minSize=Math.max(34,58-(phase-1)*3),maxSize=Math.max(minSize+10,78-(phase-1)*2);
+      const boardHeight=Math.min(410,260+(phase-1)*18);board.style.height=`${boardHeight}px`;
+      const colors=palettes[(phase-1)%palettes.length];
+      const rectWidth=Math.max(board.clientWidth||320,280);
+
+      for(let i=0;i<count;i++){
+        const size=minSize+Math.floor(Math.random()*(maxSize-minSize+1));
+        const b=document.createElement('button');b.type='button';b.className='bubble';b.setAttribute('aria-label',`Estourar bolha ${i+1}`);
+        b.style.setProperty('--size',`${size}px`);b.style.setProperty('--bubble-a',colors[0]);b.style.setProperty('--bubble-b',colors[1]);
+        const x=Math.max(0,Math.floor(Math.random()*Math.max(1,rectWidth-size-8)));
+        const y=Math.max(0,Math.floor(Math.random()*Math.max(1,boardHeight-size-8)));
+        b.style.left=`${x}px`;b.style.top=`${y}px`;b.style.zIndex=String(1+Math.floor(Math.random()*count));
+        b.addEventListener('click',()=>{
+          if(locked||b.classList.contains('popped'))return;
+          b.classList.add('popped');left--;if(navigator.vibrate)navigator.vibrate(18);
+          if(left){msg.textContent=`${left} bolhas restantes. Sem pressa.`}else finish();
+        });board.append(b);
+      }
+      msg.textContent='As bolhas estão sobrepostas novamente. Estoure no seu ritmo.';
+    };
+    bubbleRoot.querySelector('[data-reset-bubbles]')?.addEventListener('click',()=>{phase=1;fill()});
+    requestAnimationFrame(fill);
+  }
 })();
 
 // Três piadas diárias, sem tirinhas ou charges.
