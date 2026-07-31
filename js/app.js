@@ -61,40 +61,162 @@ document.addEventListener("DOMContentLoaded",()=>{
   loadEvents();
 });
 
-// Conteúdo da respiração muda conforme o dia da semana.
+// Respiração guiada — prática diária, durações de 2, 3 ou 5 minutos e recursos opcionais.
 (()=>{
- const plans=[
-  {title:"Prática livre",text:"Respire no seu ritmo e aproveite alguns minutos de calma."},
-  {title:"Foco e Energia",text:"Uma respiração guiada para começar a semana com presença e disposição."},
-  {title:"Redução do Estresse",text:"Diminua o ritmo e solte as tensões acumuladas."},
-  {title:"Pausa Consciente",text:"Volte a atenção ao presente e faça uma pausa restauradora."},
-  {title:"Concentração",text:"Organize os pensamentos e recupere o foco com a respiração."},
-  {title:"Relaxamento",text:"Encerre a semana soltando o corpo e acalmando a mente."},
-  {title:"Prática livre",text:"Respire no seu ritmo e aproveite alguns minutos de calma."}
- ];
- const box=document.querySelector('[data-breath-prep]'); if(!box)return; const plan=plans[new Date().getDay()];
- const h=box.querySelector('h2,h3'); const p=box.querySelector('p'); if(h)h.textContent=plan.title; if(p)p.textContent=plan.text;
-})();
+  const root=document.querySelector('[data-breathing-app]');
+  if(!root)return;
 
-// Respiração guiada: mostra a preparação antes do início e mantém a sessão sem distrações.
-(()=>{
-  const prep=document.querySelector('[data-breath-prep]');
-  const session=document.querySelector('[data-breath-session]');
-  const start=document.querySelector('[data-start-breath]');
-  const stop=document.querySelector('[data-stop-breath]');
-  const circle=document.querySelector('[data-breath]');
-  const phaseEl=document.querySelector('[data-breath-phase]');
-  const countEl=document.querySelector('[data-breath-count]');
-  const guidance=document.querySelector('[data-breath-guidance]');
-  if(!prep||!session||!start||!circle||!phaseEl||!countEl)return;
-  let timers=[]; let running=false;
-  const clearAll=()=>{timers.forEach(clearTimeout);timers=[];running=false;circle.classList.remove('inhale','hold','exhale')};
-  const later=(fn,ms)=>{const id=setTimeout(fn,ms);timers.push(id)};
-  const setPhase=(name,cls,text)=>{circle.classList.remove('inhale','hold','exhale');circle.classList.add(cls);phaseEl.textContent=name;guidance.textContent=text;let n=4;countEl.textContent=n;const tick=()=>{if(!running)return;n--;countEl.textContent=Math.max(n,0);if(n>0)later(tick,1000)};later(tick,1000)};
-  const cycle=()=>{if(!running)return;setPhase('Inspire','inhale','Puxe o ar lentamente pelo nariz.');later(()=>{if(!running)return;setPhase('Segure','hold','Mantenha o ar sem forçar.');later(()=>{if(!running)return;setPhase('Expire','exhale','Solte o ar devagar pela boca.');later(cycle,4000)},4000)},4000)};
-  const begin=()=>{clearAll();running=true;prep.hidden=true;session.hidden=false;session.scrollIntoView({behavior:'smooth',block:'start'});phaseEl.textContent='Prepare-se';guidance.textContent='Começaremos em instantes.';circle.classList.remove('inhale','hold','exhale');let n=3;countEl.textContent=n;const countdown=()=>{if(!running)return;n--;countEl.textContent=n;if(n>0)later(countdown,1000);else cycle()};later(countdown,1000)};
-  const end=()=>{clearAll();session.hidden=true;prep.hidden=false;prep.scrollIntoView({behavior:'smooth',block:'start'})};
-  start.addEventListener('click',begin); if(stop)stop.addEventListener('click',end);
+  const plans=[
+    {title:'Prática livre',text:'Respire no seu ritmo e aproveite alguns minutos de calma.',pattern:[4,0,6],accent:'livre'},
+    {title:'Foco e Energia',text:'Comece a semana com presença, disposição e pensamentos mais claros.',pattern:[4,2,4],accent:'energia'},
+    {title:'Redução do Estresse',text:'Diminua o ritmo e solte, aos poucos, as tensões acumuladas.',pattern:[4,2,6],accent:'estresse'},
+    {title:'Pausa Consciente',text:'Volte a atenção ao momento presente e faça uma pausa restauradora.',pattern:[4,4,6],accent:'pausa'},
+    {title:'Concentração',text:'Organize os pensamentos e recupere o foco com uma respiração ritmada.',pattern:[4,2,4],accent:'foco'},
+    {title:'Relaxamento',text:'Encerre a semana soltando o corpo e acalmando a mente.',pattern:[4,2,6],accent:'relaxamento'},
+    {title:'Prática livre',text:'Respire no seu ritmo e aproveite alguns minutos de calma.',pattern:[4,0,6],accent:'livre'}
+  ];
+
+  const plan=plans[new Date().getDay()];
+  root.dataset.breathAccent=plan.accent;
+  root.querySelector('[data-breath-plan-title]').textContent=plan.title;
+  root.querySelector('[data-breath-plan-text]').textContent=plan.text;
+  root.querySelector('[data-breath-day]').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long'}).replace(/^./,c=>c.toUpperCase());
+  root.querySelector('[data-session-plan]').textContent=plan.title;
+
+  const prep=root.querySelector('[data-breath-prep]');
+  const session=root.querySelector('[data-breath-session]');
+  const complete=root.querySelector('[data-breath-complete]');
+  const start=root.querySelector('[data-start-breath]');
+  const pause=root.querySelector('[data-pause-breath]');
+  const stop=root.querySelector('[data-stop-breath]');
+  const repeat=root.querySelector('[data-repeat-breath]');
+  const circle=root.querySelector('[data-breath]');
+  const orbit=root.querySelector('[data-breath-orbit]');
+  const phaseEl=root.querySelector('[data-breath-phase]');
+  const countEl=root.querySelector('[data-breath-count]');
+  const circleLabel=root.querySelector('[data-breath-circle-label]');
+  const guidance=root.querySelector('[data-breath-guidance]');
+  const cycleEl=root.querySelector('[data-breath-cycle]');
+  const remainingEl=root.querySelector('[data-breath-total-time]');
+  const progressEl=root.querySelector('[data-breath-progress]');
+  const soundToggle=root.querySelector('[data-breath-sound]');
+  const voiceToggle=root.querySelector('[data-breath-voice]');
+  const durationBtns=[...root.querySelectorAll('[data-duration]')];
+
+  let duration=120,remaining=duration,running=false,paused=false,phaseIndex=-1,phaseRemaining=3,cycleNumber=0;
+  let tickId=null,audioCtx=null;
+  const phases=[
+    {key:'inhale',name:'Inspire',text:'Puxe o ar lentamente pelo nariz.'},
+    {key:'hold',name:'Segure',text:'Mantenha o ar sem forçar.'},
+    {key:'exhale',name:'Expire',text:'Solte o ar devagar pela boca.'}
+  ];
+
+  const formatTime=seconds=>`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
+  const updateRemaining=()=>{
+    remainingEl.textContent=formatTime(Math.max(0,remaining));
+    progressEl.style.width=`${Math.min(100,Math.max(0,(duration-remaining)/duration*100))}%`;
+  };
+
+  durationBtns.forEach(btn=>btn.addEventListener('click',()=>{
+    duration=Number(btn.dataset.duration);
+    remaining=duration;
+    durationBtns.forEach(item=>{const active=item===btn;item.classList.toggle('active',active);item.setAttribute('aria-pressed',String(active))});
+  }));
+
+  const tone=()=>{
+    if(!soundToggle.checked)return;
+    try{
+      audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+      const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+      osc.type='sine';osc.frequency.value=phaseIndex===2?392:phaseIndex===1?494:523;
+      gain.gain.setValueAtTime(.0001,audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.055,audioCtx.currentTime+.035);
+      gain.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.5);
+      osc.connect(gain);gain.connect(audioCtx.destination);osc.start();osc.stop(audioCtx.currentTime+.52);
+    }catch(_){/* Som é apenas um recurso opcional. */}
+  };
+  const speak=text=>{
+    if(!voiceToggle.checked||!('speechSynthesis' in window))return;
+    speechSynthesis.cancel();
+    const utter=new SpeechSynthesisUtterance(text);utter.lang='pt-BR';utter.rate=.78;utter.pitch=1;utter.volume=.7;
+    speechSynthesis.speak(utter);
+  };
+
+  const clearTimer=()=>{clearInterval(tickId);tickId=null;if('speechSynthesis' in window)speechSynthesis.cancel()};
+  const setVisualPhase=(phase,seconds)=>{
+    circle.classList.remove('inhale','hold','exhale','prepare','paused');
+    orbit.classList.remove('inhale','hold','exhale','prepare','paused');
+    circle.classList.add(phase.key);orbit.classList.add(phase.key);
+    circle.style.setProperty('--phase-duration',`${seconds}s`);
+    orbit.style.setProperty('--phase-duration',`${seconds}s`);
+    phaseEl.textContent=phase.name;guidance.textContent=phase.text;circleLabel.textContent=seconds===1?'segundo':'segundos';
+    tone();speak(phase.name);
+  };
+
+  const nextPhase=()=>{
+    do{phaseIndex=(phaseIndex+1)%phases.length}while(plan.pattern[phaseIndex]===0);
+    if(phaseIndex===0){cycleNumber++;cycleEl.textContent=`Respiração ${cycleNumber}`}
+    phaseRemaining=plan.pattern[phaseIndex];
+    setVisualPhase(phases[phaseIndex],phaseRemaining);
+    countEl.textContent=phaseRemaining;
+  };
+
+  const finish=()=>{
+    clearTimer();running=false;paused=false;session.hidden=true;complete.hidden=false;
+    complete.querySelector('[data-complete-time]').textContent=`${Math.round(duration/60)} ${duration===60?'minuto':'minutos'}`;
+    progressEl.style.width='100%';
+    try{if(navigator.vibrate)navigator.vibrate([80,60,80])}catch(_){}
+    complete.scrollIntoView({behavior:'smooth',block:'center'});
+  };
+
+  const stopSession=()=>{
+    clearTimer();running=false;paused=false;session.hidden=true;complete.hidden=true;prep.hidden=false;
+    circle.classList.remove('inhale','hold','exhale','prepare','paused');orbit.classList.remove('inhale','hold','exhale','prepare','paused');
+    prep.scrollIntoView({behavior:'smooth',block:'start'});
+  };
+
+  const runTick=()=>{
+    if(!running||paused)return;
+    remaining--;
+    phaseRemaining--;
+    updateRemaining();
+    countEl.textContent=Math.max(0,phaseRemaining);
+    if(remaining<=0){finish();return}
+    if(phaseRemaining<=0)nextPhase();
+  };
+
+  const begin=()=>{
+    clearTimer();running=true;paused=false;remaining=duration;phaseIndex=-1;phaseRemaining=3;cycleNumber=0;
+    prep.hidden=true;complete.hidden=true;session.hidden=false;
+    phaseEl.textContent='Prepare-se';guidance.textContent='Acomode-se. Começaremos em instantes.';cycleEl.textContent='Respiração 1';
+    circle.classList.remove('inhale','hold','exhale','paused');circle.classList.add('prepare');
+    orbit.classList.remove('inhale','hold','exhale','paused');orbit.classList.add('prepare');
+    countEl.textContent='3';circleLabel.textContent='segundos';pause.textContent='⏸ Pausar';updateRemaining();
+    session.scrollIntoView({behavior:'smooth',block:'start'});
+    let countdown=3;
+    tickId=setInterval(()=>{
+      if(paused)return;
+      countdown--;
+      countEl.textContent=Math.max(0,countdown);
+      if(countdown<=0){clearInterval(tickId);nextPhase();tickId=setInterval(runTick,1000)}
+    },1000);
+  };
+
+  const togglePause=()=>{
+    if(!running)return;
+    paused=!paused;
+    pause.textContent=paused?'▶ Continuar':'⏸ Pausar';
+    circle.classList.toggle('paused',paused);orbit.classList.toggle('paused',paused);
+    phaseEl.textContent=paused?'Pausa':phases[phaseIndex]?.name||'Prepare-se';
+    guidance.textContent=paused?'Retome quando se sentir confortável.':phases[phaseIndex]?.text||'Acomode-se.';
+    if(paused&&'speechSynthesis' in window)speechSynthesis.cancel();
+  };
+
+  start.addEventListener('click',begin);
+  pause.addEventListener('click',togglePause);
+  stop.addEventListener('click',stopSession);
+  repeat.addEventListener('click',()=>{complete.hidden=true;prep.hidden=false;prep.scrollIntoView({behavior:'smooth',block:'start'})});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)togglePause()});
 })();
 
 // Alongamentos: abre a ilustração escolhida em tamanho grande e conduz o tempo.

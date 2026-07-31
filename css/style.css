@@ -148,3 +148,42 @@ html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:"Segoe UI
   .soft-btn{flex:0 0 auto;max-width:120px;line-height:1.15}
   .game-celebration>div{padding:19px 16px}
 }
+
+/* ===== Respiração guiada 2.0 ===== */
+.breathing-v2{max-width:680px}
+.breathing-v2 .breathing-intro{position:relative;overflow:hidden;background:linear-gradient(145deg,#fff,#f2f6ff)}
+.breathing-v2 .breathing-intro:after{content:"";position:absolute;width:125px;height:125px;border-radius:50%;right:-48px;top:-55px;background:rgba(246,195,68,.2)}
+.breath-day{position:relative;z-index:1;display:inline-flex;padding:6px 11px;border-radius:999px;background:#fff4c9;color:#68530d;font-size:11px;font-weight:900;text-transform:capitalize;letter-spacing:.04em}
+.breath-config{padding:22px;margin-bottom:14px}
+.breath-options{border:0;padding:0;margin:20px 0 0}
+.breath-options legend{width:100%;margin-bottom:11px;text-align:left;color:var(--blue);font-weight:900}
+.duration-options{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.duration-btn{min-width:0;border:2px solid var(--line);border-radius:17px;background:#f8fafc;padding:12px 7px;color:var(--ink);cursor:pointer;transition:.2s}
+.duration-btn strong,.duration-btn small{display:block}.duration-btn strong{font-size:16px;color:var(--blue)}.duration-btn small{margin-top:3px;font-size:10px;color:var(--muted)}
+.duration-btn.active{border-color:var(--yellow);background:var(--yellow-soft);transform:translateY(-2px);box-shadow:0 7px 16px rgba(246,195,68,.2)}
+.breath-toggles{display:grid;gap:9px;margin-top:17px}
+.breath-toggle{display:flex;align-items:center;gap:12px;padding:12px 13px;border:1px solid var(--line);border-radius:16px;background:#fafbfd;cursor:pointer;text-align:left}
+.breath-toggle>span{flex:1}.breath-toggle strong,.breath-toggle small{display:block}.breath-toggle strong{font-size:13px}.breath-toggle small{margin-top:2px;color:var(--muted);font-size:10px}
+.breath-toggle input{position:absolute;opacity:0;pointer-events:none}.breath-toggle i{position:relative;width:43px;height:25px;flex:0 0 43px;border-radius:999px;background:#cbd3dc;transition:.2s}.breath-toggle i:after{content:"";position:absolute;width:19px;height:19px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.18);transition:.2s}.breath-toggle input:checked+i{background:var(--blue-2)}.breath-toggle input:checked+i:after{transform:translateX(18px)}
+.breath-session{position:relative;min-height:calc(100vh - 125px);overflow:hidden;padding:24px 20px 28px;background:radial-gradient(circle at 50% 38%,#fff 0,#f4f7ff 48%,#fff8e4 100%)}
+.breath-session:before,.breath-session:after{content:"";position:absolute;border-radius:50%;filter:blur(2px);opacity:.45;pointer-events:none}.breath-session:before{width:210px;height:210px;background:#dce9ff;top:-95px;right:-95px}.breath-session:after{width:170px;height:170px;background:#fff0b1;bottom:-80px;left:-75px}
+.breath-session-top{position:relative;z-index:2;width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--blue);font-size:12px;font-weight:900}.breath-total-time{font-variant-numeric:tabular-nums;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.76)}
+.breath-progress{position:relative;z-index:2;width:100%;height:7px;margin:12px 0 25px;border-radius:999px;background:rgba(38,63,143,.1);overflow:hidden}.breath-progress span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--yellow),var(--blue-2));transition:width 1s linear}
+.breath-orbit{position:relative;width:250px;height:250px;margin:18px auto 22px;display:grid;place-items:center;border-radius:50%;transition:transform var(--phase-duration,4s) ease-in-out}
+.breath-orbit:before,.breath-orbit:after{content:"";position:absolute;inset:4px;border:1px solid rgba(49,85,183,.13);border-radius:50%}.breath-orbit:after{inset:23px;border-style:dashed;animation:breath-spin 16s linear infinite}
+.breath-session .breath-circle{position:relative;z-index:1;width:174px;height:174px;margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border:0;font-size:48px;transition:transform var(--phase-duration,4s) ease-in-out,background .5s ease,box-shadow .5s ease;background:linear-gradient(145deg,#dce8ff,#fff);box-shadow:0 18px 46px rgba(38,63,143,.18),inset 0 0 0 9px rgba(255,255,255,.45)}
+.breath-count{line-height:1;font-variant-numeric:tabular-nums}.breath-circle small{font-size:11px;margin-top:7px;color:var(--muted);font-weight:800}
+.breath-orbit.inhale .breath-circle{transform:scale(1.26);background:linear-gradient(145deg,#cfe2ff,#fff);box-shadow:0 20px 55px rgba(49,85,183,.25),inset 0 0 0 9px rgba(255,255,255,.5)}
+.breath-orbit.hold .breath-circle{transform:scale(1.26);background:linear-gradient(145deg,#fff0b6,#fff)}
+.breath-orbit.exhale .breath-circle{transform:scale(.82);background:linear-gradient(145deg,#dff4e5,#fff)}
+.breath-orbit.prepare .breath-circle{animation:breath-ready 1.8s ease-in-out infinite}
+.breath-orbit.paused,.breath-orbit.paused:after,.breath-orbit.paused .breath-circle{animation-play-state:paused!important;transition:none!important}
+.breath-phase-label{position:relative;z-index:2}.breath-guidance{position:relative;z-index:2;max-width:360px;min-height:46px}.breath-cycle-count{position:relative;z-index:2;margin:0;color:#8c97a5;font-size:12px;font-weight:800}
+.breath-session-actions{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:21px}.breath-pause,.breath-stop{margin:0;border:0;border-radius:999px;padding:11px 16px;font-weight:900;cursor:pointer;text-decoration:none}.breath-pause{background:var(--blue);color:#fff}.breath-stop{background:#eef1f5;color:var(--ink)}
+.breath-complete{background:linear-gradient(145deg,#fff,#fff8df);border-radius:28px;padding:34px 22px;text-align:center;box-shadow:var(--shadow)}.breath-complete[hidden]{display:none}.complete-icon{font-size:58px;animation:complete-pop .65s ease}.breath-complete h2{margin:8px 0;color:var(--blue);font-size:30px}.breath-complete p{color:var(--muted);line-height:1.55}.complete-summary{display:flex;flex-direction:column;gap:3px;margin:20px auto;padding:15px;border-radius:18px;background:#fff;border:1px solid var(--line)}.complete-summary strong{color:var(--blue);font-size:22px}.complete-summary span{color:var(--muted);font-size:12px}.breath-home-link{display:block;margin-top:15px;color:var(--muted);font-weight:800;text-decoration:none}
+[data-breath-accent="energia"] .breath-session{background:radial-gradient(circle at 50% 38%,#fff 0,#fff8dc 50%,#edf4ff 100%)}
+[data-breath-accent="estresse"] .breath-session,[data-breath-accent="relaxamento"] .breath-session{background:radial-gradient(circle at 50% 38%,#fff 0,#eff8f1 48%,#eef3ff 100%)}
+[data-breath-accent="pausa"] .breath-session{background:radial-gradient(circle at 50% 38%,#fff 0,#f5efff 48%,#fff7dd 100%)}
+@keyframes breath-spin{to{transform:rotate(360deg)}}@keyframes breath-ready{50%{transform:scale(1.07)}}@keyframes complete-pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@media(max-width:520px){.breathing-v2{padding-left:11px;padding-right:11px}.duration-options{gap:6px}.duration-btn{padding:11px 4px}.duration-btn strong{font-size:14px}.duration-btn small{font-size:9px}.breath-config{padding:17px}.breath-session{border-radius:22px;padding:20px 14px 24px}.breath-orbit{width:230px;height:230px}.breath-session .breath-circle{width:158px;height:158px}.breath-phase-label{font-size:28px}.breath-toggle{padding:11px}.breath-session-actions{width:100%}.breath-pause,.breath-stop{flex:1}}
+@media(prefers-reduced-motion:reduce){.breath-orbit:after,.breath-orbit.prepare .breath-circle,.complete-icon{animation:none}.breath-orbit,.breath-circle{transition-duration:.2s!important}}
