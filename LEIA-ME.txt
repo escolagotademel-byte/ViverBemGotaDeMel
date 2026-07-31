@@ -1,15 +1,8 @@
-CORREÇÃO — CAPAS REAIS DOS LIVROS
+ATUALIZAÇÃO DO MENU
 
-Substitua somente:
-- js/livros.js
+1. Substitua o arquivo index.html na raiz do projeto.
+2. Exclua manualmente o arquivo pages/leituras-rapidas.html do GitHub.
 
-O que foi corrigido:
-- A página não fica mais vazia quando uma API demora ou falha.
-- Exibe imediatamente os três livros da semana.
-- Procura a capa real primeiro no Google Books.
-- Se necessário, tenta a Open Library.
-- Se os serviços externos estiverem momentaneamente indisponíveis, mantém a capa local como segurança.
-- Faz somente três consultas por semana carregada, evitando bloqueios por excesso de buscas.
-- A Home e os alongamentos não foram alterados.
-
-Após publicar no GitHub Pages, use Ctrl + Shift + R.
+Alterações:
+- “Receitas Saudáveis” passou a se chamar “Receitas”.
+- O item “Leituras Rápidas” foi removido do menu.
