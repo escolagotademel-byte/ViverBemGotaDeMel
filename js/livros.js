@@ -12,61 +12,24 @@
   function inicioDaSemana(data = new Date()) {
     const copia = new Date(data.getFullYear(), data.getMonth(), data.getDate());
     const dia = copia.getDay();
-    const deslocamento = dia === 0 ? -6 : 1 - dia;
-    copia.setDate(copia.getDate() + deslocamento);
+    copia.setDate(copia.getDate() + (dia === 0 ? -6 : 1 - dia));
     copia.setHours(0, 0, 0, 0);
     return copia;
   }
 
   function indiceDaSemana(total) {
-    const inicio = inicioDaSemana();
     const base = new Date(2026, 0, 5);
-    const semanas = Math.floor((inicio - base) / 604800000);
+    const semanas = Math.floor((inicioDaSemana() - base) / 604800000);
     return ((semanas % total) + total) % total;
   }
 
   function exibirPeriodo() {
+    if (!periodo) return;
     const inicio = inicioDaSemana();
     const fim = new Date(inicio);
     fim.setDate(fim.getDate() + 6);
     const formato = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' });
     periodo.textContent = `Indicações válidas de ${formato.format(inicio)} a ${formato.format(fim)}.`;
-  }
-
-  function urlCapaSegura(url) {
-    const https = String(url || '').replace(/^http:/, 'https:');
-    if (!https) return '';
-    // O proxy evita bloqueios de hotlink das capas do Google Books no GitHub Pages.
-    return `https://images.weserv.nl/?url=${encodeURIComponent(https)}&w=520&h=760&fit=cover&output=webp`;
-  }
-
-  async function buscarCapa(livro, imagem, fallback) {
-    const chave = `viverbem-capa-livro:v2:${livro.busca}`;
-    const cache = localStorage.getItem(chave);
-    if (cache) {
-      imagem.hidden = false;
-      fallback.hidden = true;
-      imagem.src = cache;
-      return;
-    }
-
-    try {
-      const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(livro.busca)}&maxResults=8&printType=books`;
-      const resposta = await fetch(url, { cache: 'force-cache' });
-      if (!resposta.ok) throw new Error('Capa indisponível');
-      const dados = await resposta.json();
-      const item = (dados.items || []).find(volume => volume.volumeInfo?.imageLinks?.thumbnail || volume.volumeInfo?.imageLinks?.smallThumbnail);
-      const capaOriginal = item?.volumeInfo?.imageLinks?.thumbnail || item?.volumeInfo?.imageLinks?.smallThumbnail;
-      const capa = urlCapaSegura(capaOriginal);
-      if (!capa) throw new Error('Capa não encontrada');
-      localStorage.setItem(chave, capa);
-      imagem.hidden = false;
-      fallback.hidden = true;
-      imagem.src = capa;
-    } catch (erro) {
-      imagem.hidden = true;
-      fallback.hidden = false;
-    }
   }
 
   function criarCard(livro) {
@@ -75,41 +38,38 @@
     card.innerHTML = `
       <div class="recommendation-cover-wrap">
         <span class="recommendation-type">📚 Livro</span>
-        <img class="recommendation-cover" alt="Capa de ${escapeHtml(livro.titulo)}" loading="lazy">
-        <div class="recommendation-cover-fallback" hidden>${escapeHtml(livro.titulo)}</div>
+        <img class="recommendation-cover" src="${escapeHtml(livro.capa)}" alt="Capa de ${escapeHtml(livro.titulo)}" loading="lazy">
+        <div class="recommendation-cover-fallback" hidden>
+          <strong>${escapeHtml(livro.titulo)}</strong><small>${escapeHtml(livro.autor)}</small>
+        </div>
       </div>
       <div class="recommendation-body">
         <h3 class="recommendation-title">${escapeHtml(livro.titulo)}</h3>
         <p class="recommendation-author">${escapeHtml(livro.autor)}</p>
-        <div class="recommendation-tags">
-          <span class="recommendation-tag">${escapeHtml(livro.genero)}</span>
-        </div>
+        <div class="recommendation-tags"><span class="recommendation-tag">${escapeHtml(livro.genero)}</span></div>
         <p class="recommendation-synopsis">${escapeHtml(livro.sinopse)}</p>
       </div>`;
 
     const imagem = card.querySelector('.recommendation-cover');
     const fallback = card.querySelector('.recommendation-cover-fallback');
     imagem.addEventListener('error', () => {
-      localStorage.removeItem(`viverbem-capa-livro:v2:${livro.busca}`);
       imagem.hidden = true;
       fallback.hidden = false;
     }, { once: true });
-    buscarCapa(livro, imagem, fallback);
     return card;
   }
 
   async function carregar() {
     exibirPeriodo();
     try {
-      const resposta = await fetch('../data/livros.json', { cache: 'no-store' });
-      if (!resposta.ok) throw new Error('Não foi possível carregar as indicações.');
+      const resposta = await fetch('../data/livros.json?v=3', { cache: 'no-store' });
+      if (!resposta.ok) throw new Error('Falha ao carregar');
       const semanas = await resposta.json();
-      if (!Array.isArray(semanas) || !semanas.length) throw new Error('Nenhuma indicação cadastrada.');
-      const livros = semanas[indiceDaSemana(semanas.length)];
+      if (!Array.isArray(semanas) || !semanas.length) throw new Error('Sem indicações');
       lista.innerHTML = '';
-      livros.forEach(livro => lista.appendChild(criarCard(livro)));
+      semanas[indiceDaSemana(semanas.length)].forEach(livro => lista.appendChild(criarCard(livro)));
     } catch (erro) {
-      lista.innerHTML = `<div class="recommendation-error">Não foi possível carregar as indicações agora. Tente novamente mais tarde.</div>`;
+      lista.innerHTML = '<div class="recommendation-error">Não foi possível carregar as indicações agora. Atualize a página.</div>';
     }
   }
 

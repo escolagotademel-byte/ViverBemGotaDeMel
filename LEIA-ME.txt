@@ -1,15 +1,7 @@
-VIVER BEM — CORREÇÕES DE RESPIRAÇÃO E ALONGAMENTOS
+Substitua somente os arquivos e a pasta deste pacote, preservando os mesmos caminhos.
 
-Substitua no GitHub, mantendo as mesmas pastas:
-- pages/respiracao.html
-- pages/alongamentos.html
-- css/style.css
-- js/app.js
-
-Depois faça Commit changes e atualize o site com Ctrl + F5.
-
-Alterações:
-1. As orientações da respiração agora aparecem antes do botão Começar, sem precisar rolar até o final.
-2. Durante a respiração, a tela mostra somente Inspire, Segure e Expire, com círculo e contagem.
-3. Os alongamentos ganharam ilustrações maiores e mais claras, com corpo em azul/amarelo e setas laranjas indicando o movimento.
-4. Ao tocar em um alongamento, ele abre em tela grande, com instrução curta e contador de 20 segundos.
+IMPORTANTE:
+- O index.html restaura a Home original completa, com a Agenda Cultural no local original.
+- Não substitua o css/style.css: este pacote não contém CSS.
+- As capas agora são arquivos locais em assets/capas-livros e não dependem do Google Books.
+- Após enviar ao GitHub, use Ctrl+Shift+R para limpar o cache do navegador.
