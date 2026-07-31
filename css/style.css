@@ -124,3 +124,20 @@ html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:"Segoe UI
   .stretch-poster-wrap{padding:4px;border-radius:14px}
   .stretch-poster{border-radius:10px}
 }
+
+/* Alongamentos individuais — otimizado para celular */
+.stretch-individual-page{max-width:980px;margin:0 auto}
+.stretch-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:18px}
+.stretch-card{position:relative;background:#fff;border-radius:22px;padding:16px;box-shadow:0 8px 24px rgba(25,43,72,.10);display:flex;flex-direction:column;align-items:center;overflow:hidden}
+.stretch-card img{display:block;width:100%;height:330px;object-fit:contain;background:#fff;border-radius:15px}
+.stretch-copy{width:100%;padding:8px 4px 2px}
+.stretch-copy h3{margin:0 0 7px;color:#19335c;font-size:1.15rem}
+.stretch-copy p{margin:0;color:#4e5d72;line-height:1.5}
+.stretch-number{position:absolute;top:14px;left:14px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#f6c344;color:#17345f;font-weight:800;box-shadow:0 3px 10px rgba(0,0,0,.12);z-index:2}
+@media (max-width:680px){
+  .stretch-list{grid-template-columns:1fr;gap:14px}
+  .stretch-card{padding:12px;border-radius:18px}
+  .stretch-card img{height:min(68vh,430px)}
+  .stretch-copy{padding:10px 6px 4px}
+  .stretch-copy h3{font-size:1.2rem}
+}
