@@ -1,0 +1,9 @@
+VIVER BEM 2.0
+
+- Tela inicial simplificada.
+- “Momento Gota de Mel” substituído por “Frase do Dia”.
+- Frases inspiradoras renovadas diariamente.
+- Respiração Guiada diferente conforme o dia da semana.
+- Humor do Dia com três piadas diárias, sem tirinhas ou charges.
+- Jogos na nova ordem, com fases automáticas e dificuldade progressiva.
+- Receitas automáticas e demais recursos anteriores preservados.

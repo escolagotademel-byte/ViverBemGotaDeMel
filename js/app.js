@@ -1,4 +1,30 @@
-const frases=["Uma pausa também é cuidado.","Seu bem-estar merece espaço na rotina.","Respire fundo: você não precisa resolver tudo de uma vez.","Pequenos gestos de cuidado transformam o dia.","Você faz diferença todos os dias.","Desacelerar também é seguir em frente.","Cuide de si com o mesmo carinho que oferece aos outros.","Hoje, escolha falar consigo com gentileza.","Seu esforço merece reconhecimento.","Descansar é parte do caminho.","Um minuto de calma pode mudar o restante do dia.","Valorize as pequenas conquistas.","Seu corpo também precisa ser ouvido.","Gentileza consigo é uma forma de força.","Faça uma pausa, alongue-se e recomece.","Você não precisa dar conta de tudo sozinho.","O cuidado começa nos pequenos hábitos.","Permita-se viver o momento presente.","Cada dia oferece uma nova possibilidade.","Acolha seus sentimentos sem julgamento.","Seu ritmo também é válido.","Respire: você está fazendo o melhor que pode.","Uma rotina mais leve começa com uma escolha.","Compartilhar também alivia.","Cultive pensamentos que façam bem.","O descanso renova a criatividade.","Seu trabalho é importante, e você também.","Celebre o que deu certo hoje.","Cuidar da mente é cuidar da vida.","Há força na calma.","Cuidar de quem cuida faz toda a diferença."];
+const frases=[
+"Pequenos passos diários constroem grandes conquistas.",
+"Cada dia traz uma nova oportunidade para aprender e crescer.",
+"Gentileza transforma ambientes e fortalece relações.",
+"Respirar fundo também é uma forma de seguir em frente.",
+"Valorize cada conquista, por menor que pareça.",
+"O sucesso é construído com constância, não com pressa.",
+"Uma atitude positiva pode mudar o rumo do seu dia.",
+"Seu esforço merece reconhecimento.",
+"Há força na calma e coragem na continuidade.",
+"Cuide de você com o mesmo carinho que oferece aos outros.",
+"Seu trabalho é importante, e o seu bem-estar também.",
+"Cada recomeço carrega uma nova possibilidade.",
+"Você não precisa fazer tudo de uma vez; avance com serenidade.",
+"A dedicação de hoje prepara as conquistas de amanhã.",
+"Confie no caminho que está construindo.",
+"Uma palavra gentil pode transformar o dia de alguém.",
+"Aprender também é reconhecer o próprio ritmo.",
+"Persistência é continuar, mesmo em pequenos passos.",
+"Que hoje você encontre motivos para acreditar em si.",
+"Seu melhor pode mudar de um dia para o outro, e tudo bem.",
+"Grandes resultados começam com pequenas escolhas.",
+"Permita-se reconhecer tudo o que já superou.",
+"Trabalhar em equipe torna os caminhos mais leves.",
+"Cada experiência traz uma oportunidade de crescimento.",
+"Você faz diferença todos os dias."
+];
 
 const icons={teatro:"🎭",musica:"🎵",exposicao:"🎨",cinema:"🎬",danca:"💃",comedia:"😂",infantil:"🎪",esporte:"🏃",cultura:"✨"};
 const pageIsInsidePages=location.pathname.includes("/pages/");
@@ -56,7 +82,7 @@ async function loadEvents(){
 
 document.addEventListener("DOMContentLoaded",()=>{
   document.querySelectorAll(".accordion-trigger").forEach(t=>t.addEventListener("click",()=>{const c=document.getElementById(t.getAttribute("aria-controls"));const open=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!open));c.classList.toggle("open",!open)}));
-  const quote=document.querySelector("[data-daily-quote]");const dateEl=document.querySelector("[data-daily-date]");if(quote){const now=new Date();quote.textContent=frases[(now.getDate()-1)%frases.length];if(dateEl)dateEl.textContent=now.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"})}
+  const greeting=document.querySelector("[data-greeting]");if(greeting){const h=new Date().getHours();greeting.textContent=h<12?"Bom dia!":h<18?"Boa tarde!":"Boa noite!";} const quote=document.querySelector("[data-daily-quote]");const dateEl=document.querySelector("[data-daily-date]");if(quote){const now=new Date();quote.textContent=frases[(now.getDate()-1)%frases.length];if(dateEl)dateEl.textContent=now.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"})}
   const modal=document.querySelector("[data-event-modal]");if(modal){const close=()=>{modal.hidden=true;document.body.classList.remove("modal-open")};modal.querySelectorAll("[data-close-event]").forEach(btn=>btn.addEventListener("click",close));document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!modal.hidden)close()})}
   loadEvents();
 });

@@ -111,3 +111,20 @@ html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:"Segoe UI
   .recipe-image{height:auto;aspect-ratio:16/10;object-fit:cover;min-height:0}
   .recipe-copy p{display:block;overflow:visible}
 }
+
+/* Viver Bem 2.0 */
+.hero-compact{min-height:auto;padding:22px 20px;display:flex;align-items:center;justify-content:center;gap:16px}
+.hero-compact .school-logo{width:78px;height:78px;object-fit:contain;margin:0}
+.hero-compact h1{margin:0}
+.hero-compact .eyebrow,.hero-compact .subtitle{margin:2px 0}
+.home-shell{max-width:820px}
+.home-greeting{font-size:1.05rem;font-weight:700;color:#35556b;margin:4px 4px 10px}
+.daily-card-clean{margin-top:0}
+.compact-heading{margin-top:22px}
+.quick-sections{gap:10px}
+.agenda-compact-card{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#fff;border-radius:18px;padding:16px 18px;margin-top:18px;box-shadow:0 8px 24px rgba(30,65,80,.08)}
+.agenda-compact-card div{display:grid;gap:3px}.agenda-compact-card small{color:#647785}.agenda-compact-card strong{color:#274a5c}
+.jokes-grid{display:grid;gap:14px}.joke-card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 8px 24px rgba(30,65,80,.08);border:1px solid rgba(246,195,68,.35)}.joke-card h3{margin:8px 0;color:#274a5c}.joke-card p{margin:0;font-size:1.06rem;color:#526673}.joke-number{display:inline-block;background:#fff4c7;color:#765800;font-weight:800;border-radius:999px;padding:6px 10px;font-size:.78rem}.humor-care{margin-top:16px}
+.practice-day{display:block;color:#6b7f8c;font-weight:700;margin-bottom:5px}.practice-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.practice-summary span,.breath-progress,.phase-badge{display:inline-flex;align-items:center;background:#eef8f5;color:#2e6658;border-radius:999px;padding:7px 11px;font-size:.82rem;font-weight:800}.breath-progress{margin-bottom:12px}.breath-circle.finished{transform:scale(.92);background:#daf3e7}
+.phase-badge{white-space:nowrap}.game-message.level-complete{font-weight:900;color:#2c7a5b;animation:levelPulse .6s ease-in-out infinite alternate}@keyframes levelPulse{to{transform:scale(1.03)}}
+@media(max-width:600px){.hero-compact{justify-content:flex-start;padding:18px 16px}.hero-compact .school-logo{width:64px;height:64px}.hero-compact h1{font-size:1.75rem}.daily-card-clean{padding:18px}.daily-card-clean h2{font-size:1.15rem}.agenda-compact-card{align-items:flex-start}.section-copy small{font-size:.78rem}}
