@@ -1,30 +1,4 @@
-const frases=[
-"Pequenos passos diários constroem grandes conquistas.",
-"Cada dia traz uma nova oportunidade para aprender e crescer.",
-"Gentileza transforma ambientes e fortalece relações.",
-"Respirar fundo também é uma forma de seguir em frente.",
-"Valorize cada conquista, por menor que pareça.",
-"O sucesso é construído com constância, não com pressa.",
-"Uma atitude positiva pode mudar o rumo do seu dia.",
-"Seu esforço merece reconhecimento.",
-"Há força na calma e coragem na continuidade.",
-"Cuide de você com o mesmo carinho que oferece aos outros.",
-"Seu trabalho é importante, e o seu bem-estar também.",
-"Cada recomeço carrega uma nova possibilidade.",
-"Você não precisa fazer tudo de uma vez; avance com serenidade.",
-"A dedicação de hoje prepara as conquistas de amanhã.",
-"Confie no caminho que está construindo.",
-"Uma palavra gentil pode transformar o dia de alguém.",
-"Aprender também é reconhecer o próprio ritmo.",
-"Persistência é continuar, mesmo em pequenos passos.",
-"Que hoje você encontre motivos para acreditar em si.",
-"Seu melhor pode mudar de um dia para o outro, e tudo bem.",
-"Grandes resultados começam com pequenas escolhas.",
-"Permita-se reconhecer tudo o que já superou.",
-"Trabalhar em equipe torna os caminhos mais leves.",
-"Cada experiência traz uma oportunidade de crescimento.",
-"Você faz diferença todos os dias."
-];
+const frases=["Acredite no seu propósito: pequenas atitudes transformam grandes dias.", "Seu trabalho deixa marcas bonitas na vida de muitas pessoas.", "Cuidar de si também fortalece tudo o que você oferece aos outros.", "Quando a equipe caminha unida, os desafios ficam mais leves.", "Reconheça a sua dedicação: ela faz diferença todos os dias.", "Gratidão transforma o que temos em força para continuar.", "Uma palavra gentil pode mudar o dia de alguém.", "Você não precisa fazer tudo de uma vez; avance com calma.", "Cada novo dia traz uma oportunidade de recomeçar.", "Seu esforço de hoje ajuda a construir resultados de amanhã.", "A colaboração faz talentos individuais se tornarem conquistas coletivas.", "Respire fundo e confie no caminho que está construindo.", "Há coragem também em pedir ajuda e dividir responsabilidades.", "Celebre as pequenas conquistas: elas sustentam os grandes sonhos.", "O respeito torna qualquer ambiente mais acolhedor.", "Seu bem-estar merece espaço na sua rotina.", "A gentileza é uma força que se multiplica quando é compartilhada.", "Tudo bem desacelerar para recuperar as energias.", "Você é parte importante desta equipe.", "Escutar com atenção é uma das formas mais bonitas de cuidar.", "O aprendizado acontece um passo de cada vez.", "A união transforma desafios em possibilidades.", "Faça o melhor que puder hoje, sem esquecer de cuidar de você.", "Uma pausa consciente pode renovar o restante do dia.", "Valorize quem caminha ao seu lado.", "Seu trabalho tem valor, e sua presença também.", "A confiança cresce quando reconhecemos nossas próprias conquistas.", "Cooperar é construir um resultado que pertence a todos.", "Que hoje você encontre motivos simples para agradecer.", "Ser gentil consigo também é necessário.", "Novos resultados começam com pequenas mudanças.", "O equilíbrio nasce quando respeitamos nossos limites.", "Compartilhar conhecimentos fortalece toda a equipe.", "Você já superou muitos dias difíceis; confie em si.", "A dedicação diária cria caminhos que antes pareciam impossíveis.", "Onde existe acolhimento, as pessoas florescem.", "Pausar não é desistir; é recuperar forças para continuar.", "A melhor equipe é aquela em que todos se sentem valorizados.", "Permita-se reconhecer tudo o que já evoluiu.", "O cuidado presente hoje se transforma em bem-estar amanhã.", "Comece com o que você tem e avance no seu ritmo.", "A empatia aproxima pessoas e fortalece relações.", "Seu sorriso pode ser o acolhimento que alguém precisava.", "Toda contribuição importa quando o objetivo é coletivo.", "Cultive pensamentos que tragam calma e esperança.", "Agradecer pelo caminho também ajuda a enxergar o progresso.", "Você merece falar consigo com o mesmo carinho que oferece aos outros.", "Grandes mudanças começam em escolhas simples.", "Juntos, podemos tornar a rotina mais leve e significativa.", "Há beleza em continuar aprendendo.", "Respeitar o próprio ritmo é uma forma de sabedoria.", "A motivação cresce quando lembramos por que começamos.", "Hoje é um bom dia para reconhecer alguém da equipe.", "A calma ajuda a encontrar soluções mais claras.", "Seu compromisso inspira quem está ao seu redor.", "Um ambiente saudável começa com atitudes respeitosas.", "Cada pessoa traz uma força única para a equipe.", "Não diminua suas conquistas só porque ainda há caminho pela frente.", "A esperança também se constrói nas pequenas ações.", "Cuidar das relações é cuidar do trabalho em equipe.", "Faça uma pausa, respire e retome com mais leveza.", "Você pode transformar o dia começando por uma atitude positiva.", "Quando compartilhamos responsabilidades, multiplicamos possibilidades.", "Seu desenvolvimento acontece também nos dias mais comuns.", "A gratidão ajuda a perceber o que realmente importa.", "Acolher diferenças torna a equipe mais forte.", "Seu valor não depende de um dia perfeito.", "A persistência tranquila também leva longe.", "O bem que fazemos volta em forma de vínculos e aprendizado.", "Confie: você está construindo algo importante todos os dias."];
 
 const icons={teatro:"🎭",musica:"🎵",exposicao:"🎨",cinema:"🎬",danca:"💃",comedia:"😂",infantil:"🎪",esporte:"🏃",cultura:"✨"};
 const pageIsInsidePages=location.pathname.includes("/pages/");
@@ -82,10 +56,25 @@ async function loadEvents(){
 
 document.addEventListener("DOMContentLoaded",()=>{
   document.querySelectorAll(".accordion-trigger").forEach(t=>t.addEventListener("click",()=>{const c=document.getElementById(t.getAttribute("aria-controls"));const open=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!open));c.classList.toggle("open",!open)}));
-  const greeting=document.querySelector("[data-greeting]");if(greeting){const h=new Date().getHours();greeting.textContent=h<12?"Bom dia!":h<18?"Boa tarde!":"Boa noite!";} const quote=document.querySelector("[data-daily-quote]");const dateEl=document.querySelector("[data-daily-date]");if(quote){const now=new Date();quote.textContent=frases[(now.getDate()-1)%frases.length];if(dateEl)dateEl.textContent=now.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"})}
+  const quote=document.querySelector("[data-daily-quote]");const dateEl=document.querySelector("[data-daily-date]");if(quote){const now=new Date();const dayKey=Math.floor(new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime()/86400000);quote.textContent=frases[((dayKey%frases.length)+frases.length)%frases.length];if(dateEl)dateEl.textContent=now.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"})}
   const modal=document.querySelector("[data-event-modal]");if(modal){const close=()=>{modal.hidden=true;document.body.classList.remove("modal-open")};modal.querySelectorAll("[data-close-event]").forEach(btn=>btn.addEventListener("click",close));document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!modal.hidden)close()})}
   loadEvents();
 });
+
+// Conteúdo da respiração muda conforme o dia da semana.
+(()=>{
+ const plans=[
+  {title:"Prática livre",text:"Respire no seu ritmo e aproveite alguns minutos de calma."},
+  {title:"Foco e Energia",text:"Uma respiração guiada para começar a semana com presença e disposição."},
+  {title:"Redução do Estresse",text:"Diminua o ritmo e solte as tensões acumuladas."},
+  {title:"Pausa Consciente",text:"Volte a atenção ao presente e faça uma pausa restauradora."},
+  {title:"Concentração",text:"Organize os pensamentos e recupere o foco com a respiração."},
+  {title:"Relaxamento",text:"Encerre a semana soltando o corpo e acalmando a mente."},
+  {title:"Prática livre",text:"Respire no seu ritmo e aproveite alguns minutos de calma."}
+ ];
+ const box=document.querySelector('[data-breath-prep]'); if(!box)return; const plan=plans[new Date().getDay()];
+ const h=box.querySelector('h2,h3'); const p=box.querySelector('p'); if(h)h.textContent=plan.title; if(p)p.textContent=plan.text;
+})();
 
 // Respiração guiada: mostra a preparação antes do início e mantém a sessão sem distrações.
 (()=>{
@@ -156,3 +145,8 @@ document.addEventListener("DOMContentLoaded",()=>{
   const bubbleRoot=document.querySelector('[data-bubble-game]');
   if(bubbleRoot){const board=bubbleRoot.querySelector('[data-bubble-board]'),msg=bubbleRoot.querySelector('[data-bubble-message]');const fill=()=>{board.innerHTML='';let left=24;for(let i=0;i<24;i++){const b=document.createElement('button');b.type='button';b.className='bubble';b.setAttribute('aria-label','Estourar bolha');b.style.setProperty('--size',`${42+Math.floor(Math.random()*26)}px`);b.addEventListener('click',()=>{if(b.classList.contains('popped'))return;b.classList.add('popped');left--;msg.textContent=left?`${left} bolhas restantes. Sem pressa.`:'Pronto. Faça uma respiração profunda.'});board.append(b)}msg.textContent='Uma bolha de cada vez.'};bubbleRoot.querySelector('[data-reset-bubbles]')?.addEventListener('click',fill);fill();}
 })();
+
+// Três piadas diárias, sem tirinhas ou charges.
+(()=>{const box=document.querySelector('[data-daily-jokes-list]');if(!box)return;const jokes=[
+"Por que o livro de matemática ficou triste? Porque tinha muitos problemas.","O que o zero disse para o oito? Que cinto bonito!","O café foi ao médico porque estava muito passado.","O que uma impressora disse para a outra? Essa folha é sua ou é impressão minha?","Por que o computador foi ao médico? Porque estava com um vírus.","Qual é o contrário de volátil? Vem cá, sobrinho!","Por que o lápis foi promovido? Porque estava sempre apontando boas ideias.","O que o relógio fez quando ficou com fome? Foi comer um segundo.","Por que a agenda foi trabalhar feliz? Porque tinha um dia cheio de possibilidades.","O que a caneta disse ao papel? Você deixa tudo muito bem escrito.","Por que a cadeira foi elogiada? Porque sempre dava apoio.","O que o café disse para o açúcar? Sem você, minha vida fica amarga.","Por que o celular colocou óculos? Porque perdeu os contatos.","O que a borracha disse ao lápis? Pode errar, estou aqui para ajudar.","Por que o calendário é tão popular? Porque tem muitos encontros.","O que a lâmpada disse ao interruptor? Você me liga.","Por que o caderno estava tranquilo? Porque tinha tudo anotado.","O que uma parede disse para a outra? A gente se encontra na esquina.","Por que a vassoura não se atrasou? Porque saiu varrendo.","O que o tomate foi fazer no banco? Tirar extrato.","Por que o pão não contou o segredo? Porque era assunto de família.","O que a nuvem disse para o céu? Estou passada.","Por que o elevador é educado? Porque sempre dá espaço para subir.","O que a régua disse ao lápis? Pode contar comigo.","Por que o sapato foi para a escola? Para aprender a dar bons passos.","O que uma xícara disse para a outra? Você é chá-rmosa.","Por que o ventilador é bom de conversa? Porque sempre puxa assunto.","O que a porta disse para a chave? Você abre meu coração.","Por que a mochila estava animada? Porque estava cheia de planos.","O que o espelho respondeu? Reflita sobre isso."
+];const d=Math.floor(new Date(new Date().setHours(0,0,0,0)).getTime()/86400000);const start=((d*3)%jokes.length+jokes.length)%jokes.length;box.innerHTML=[0,1,2].map((n,i)=>`<article class="joke-card"><span>${i+1}</span><p>${jokes[(start+n)%jokes.length]}</p></article>`).join('');})();
