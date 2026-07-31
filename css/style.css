@@ -113,3 +113,14 @@ html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:"Segoe UI
 }
 
 .daily-jokes-list{display:grid;gap:12px;margin-top:14px}.joke-card{display:flex;gap:12px;align-items:flex-start;padding:16px;border:1px solid #f1dca6;border-radius:16px;background:#fffaf0}.joke-card span{display:grid;place-items:center;min-width:30px;height:30px;border-radius:50%;background:#f6c344;font-weight:800}.joke-card p{margin:4px 0 0;line-height:1.55}.recipes-updated{margin:10px 0 0;font-size:.85rem;color:#667085}.stretch-card-clear img{width:100%;height:auto;max-height:360px;object-fit:contain;object-position:center;background:#fff}@media(max-width:640px){.stretch-card-clear img{max-height:none;aspect-ratio:4/3;object-fit:contain}.hero{text-align:center}.hero .school-logo{margin-inline:auto}}
+
+
+/* Guia único de alongamentos — modelo oficial enviado pela escola */
+.stretch-poster-page{max-width:1100px;margin:0 auto;padding-left:16px;padding-right:16px}
+.stretch-poster-wrap{background:#fff;border-radius:22px;padding:10px;box-shadow:0 10px 30px rgba(25,43,72,.10);overflow:hidden}
+.stretch-poster{display:block;width:100%;height:auto;border-radius:15px;object-fit:contain}
+@media (max-width:700px){
+  .stretch-poster-page{padding-left:8px;padding-right:8px}
+  .stretch-poster-wrap{padding:4px;border-radius:14px}
+  .stretch-poster{border-radius:10px}
+}
