@@ -1,0 +1,25 @@
+{
+  "name": "Viver Bem | Escola Gota de Mel",
+  "short_name": "Viver Bem",
+  "description": "Programa de Bem-Estar da Escola Gota de Mel.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fffdf7",
+  "theme_color": "#f6c344",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
