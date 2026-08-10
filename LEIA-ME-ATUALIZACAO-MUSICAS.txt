@@ -1,0 +1,8 @@
+ATUALIZAÇÃO — MÚSICAS E SONS RELAXANTES
+
+Arquivos adicionados/alterados:
+- pages/musicas.html
+- css/musicas.css
+
+A página agora oferece playlists incorporadas do Spotify e atalhos para sons da natureza no YouTube.
+A Home e as demais páginas não foram alteradas.
