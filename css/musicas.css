@@ -1,0 +1,25 @@
+.music-page{max-width:1040px}
+.music-intro{margin-bottom:20px}
+.music-section{margin-top:22px}
+.music-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:14px}
+.music-section-heading h2{margin:4px 0 0;color:#284f61}
+.music-section-heading p{max-width:420px;margin:0;color:#667d88;font-size:.92rem;text-align:right}
+.music-kicker{font-size:.8rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:#6d7f88}
+.playlist-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.playlist-card{background:#fff;border-radius:20px;padding:16px;box-shadow:0 8px 24px rgba(35,75,90,.08);border:1px solid rgba(35,75,90,.08);overflow:hidden}
+.playlist-copy{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.playlist-copy>span{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:#fff5c9;font-size:1.45rem;flex:0 0 auto}
+.playlist-copy h3{margin:0 0 2px;color:#284f61;font-size:1.05rem}
+.playlist-copy p{margin:0;color:#6b7d86;font-size:.88rem}
+.playlist-card iframe{display:block;border-radius:14px;background:#f1f1f1}
+.nature-section{margin-top:30px}
+.sound-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.sound-card{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:145px;padding:18px;text-align:center;background:#fff;border-radius:18px;text-decoration:none;color:#284f61;box-shadow:0 8px 22px rgba(35,75,90,.07);border:1px solid rgba(35,75,90,.08);transition:transform .2s ease,box-shadow .2s ease}
+.sound-card:hover,.sound-card:focus-visible{transform:translateY(-3px);box-shadow:0 12px 28px rgba(35,75,90,.13)}
+.sound-card span{font-size:2rem;margin-bottom:8px}
+.sound-card strong{font-size:1rem}
+.sound-card small{margin-top:4px;color:#73858d}
+.music-tip{display:flex;align-items:flex-start;gap:12px;margin-top:20px;padding:16px 18px;border-radius:16px;background:#fff9dc;color:#5d5a3d}
+.music-tip span{font-size:1.35rem}.music-tip p{margin:0}
+@media(max-width:760px){.music-section-heading{display:block}.music-section-heading p{margin-top:6px;text-align:left}.playlist-grid{grid-template-columns:1fr}.sound-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.playlist-card{padding:14px}}
+@media(max-width:420px){.sound-grid{grid-template-columns:1fr 1fr}.sound-card{min-height:126px;padding:14px}.playlist-copy>span{width:42px;height:42px}.music-section-heading h2{font-size:1.3rem}}
