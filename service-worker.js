@@ -1,9 +1,10 @@
-const CACHE_NAME = 'viver-bem-shell-v1';
+const CACHE_NAME = 'viver-bem-shell-v2';
 const APP_SHELL = [
   './',
   './index.html',
   './css/style.css',
   './js/app.js',
+  './js/eventos-internos.js',
   './assets/logo-gota-de-mel.png',
   './icon-192.png',
   './icon-512.png',

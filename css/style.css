@@ -368,3 +368,97 @@ html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:"Segoe UI
 
 /* Cursos Gratuitos */
 .course-links{display:grid;gap:14px;margin-top:16px}.course-link{display:block;padding:16px;border-radius:16px;background:#fffaf0;border:1px solid rgba(40,82,45,.12);text-decoration:none;color:inherit;box-shadow:0 4px 14px rgba(0,0,0,.05)}.course-link strong{display:block;font-size:1rem;color:#28522d;margin-bottom:7px}.course-link span{display:block;font-size:.9rem;line-height:1.45;color:#555;margin-bottom:10px}.course-link b{font-size:.85rem;color:#b27b00}@media(max-width:600px){.course-link{padding:14px}.course-link strong{font-size:.95rem}}
+
+/* Próximos eventos da Gota de Mel — compacto e mobile-first */
+.company-events {
+  margin: 0 0 16px;
+  border: 1px solid rgba(40, 82, 45, .12);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fffdf4 0%, #f5fbf3 100%);
+  box-shadow: 0 7px 22px rgba(41, 51, 64, .06);
+  overflow: hidden;
+}
+.company-events-main {
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+}
+.company-events-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: #eaf5df;
+  font-size: 1.25rem;
+}
+.company-events-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.company-events-copy strong {
+  color: #28522d;
+  font-size: .87rem;
+  line-height: 1.2;
+}
+.company-events-copy span {
+  overflow: hidden;
+  color: #53615b;
+  font-size: .76rem;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.company-events-toggle {
+  border: 0;
+  padding: 7px 2px 7px 8px;
+  background: transparent;
+  color: #28522d;
+  font: inherit;
+  font-size: .76rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.company-events-toggle span { font-size: 1rem; margin-left: 2px; }
+.company-events-list {
+  display: grid;
+  gap: 8px;
+  padding: 0 13px 13px;
+}
+.company-event-item {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 13px;
+  background: rgba(255,255,255,.82);
+}
+.company-event-item time {
+  color: #28522d;
+  font-size: .76rem;
+  font-weight: 900;
+}
+.company-event-item div { min-width: 0; display: grid; gap: 2px; }
+.company-event-item strong {
+  color: #26342d;
+  font-size: .82rem;
+  line-height: 1.3;
+}
+.company-event-item small {
+  color: #68736d;
+  font-size: .7rem;
+  line-height: 1.25;
+}
+@media (max-width: 390px) {
+  .company-events-main { grid-template-columns: 38px minmax(0, 1fr) auto; gap: 8px; padding: 9px 10px; }
+  .company-events-icon { width: 38px; height: 38px; font-size: 1.1rem; }
+  .company-events-copy strong { font-size: .8rem; }
+  .company-events-copy span { font-size: .7rem; }
+  .company-events-toggle { font-size: .7rem; }
+}
