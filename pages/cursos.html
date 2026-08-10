@@ -1,1 +1,46 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f6c344"><title>Cursos Gratuitos | Viver Bem</title><link rel="stylesheet" href="../css/style.css"><script src="../js/app.js" defer></script></head><body><header class="page-topbar"><a class="back-link" href="../index.html" aria-label="Voltar">‹</a><div class="page-brand"><img class="mini-logo" src="../assets/logo-gota-de-mel.png" alt=""><div><h1>Cursos Gratuitos</h1><small>Viver Bem</small></div></div></header><main class="page-content"><section class="intro-card"><div class="intro-icon">🎓</div><h2>Cursos Gratuitos</h2><p>Oportunidades para ampliar conhecimentos no seu ritmo.</p></section><section class="content-card"><h3>Onde procurar</h3><div class="course-links"><article><h4>Fundação Bradesco — Escola Virtual</h4><p>Cursos gratuitos e 100% on-line em áreas como tecnologia, produtividade e desenvolvimento pessoal.</p><a class="btn" href="https://www.ev.org.br/cursos" target="_blank" rel="noopener noreferrer">Acessar cursos</a></article><article><h4>SEBRAE</h4><p>Cursos online gratuitos em gestão, empreendedorismo, pessoas, marketing, finanças e muito mais.</p><a class="btn" href="https://loja.sebrae.com.br/cursos/cursos-online" target="_blank" rel="noopener noreferrer">Acessar cursos</a></article><article><h4>Escola Virtual de Governo — ENAP</h4><p>Cursos gratuitos, autoinstrucionais e com certificado em diversas áreas de conhecimento.</p><a class="btn" href="https://www.escolavirtual.gov.br/" target="_blank" rel="noopener noreferrer">Acessar cursos</a></article><article><h4>FGV — Cursos Gratuitos</h4><p>Centenas de cursos online gratuitos em áreas como gestão, educação, tecnologia, finanças e negócios.</p><a class="btn" href="https://educacao-executiva.fgv.br/cursos/gratuitos" target="_blank" rel="noopener noreferrer">Acessar cursos</a></article></div></section><section class="content-card"><h3>Antes de começar</h3><p>Confira a carga horária, o conteúdo, a emissão de certificado e se o curso combina com seu objetivo.</p></section></main><footer>Escola Gota de Mel</footer></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f6c344">
+<title>Cursos Gratuitos | Viver Bem</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/app.js" defer></script>
+<style>
+.cursos-page .intro-card{overflow:hidden;position:relative}
+.cursos-page .intro-card:after{content:"";position:absolute;right:-45px;top:-55px;width:150px;height:150px;border-radius:50%;background:rgba(246,195,68,.18)}
+.course-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.course-card{overflow:hidden;padding:0!important;border:1px solid rgba(0,0,0,.07);border-radius:18px;background:#fff;box-shadow:0 5px 18px rgba(0,0,0,.06);display:flex;flex-direction:column}
+.course-thumb{height:112px;display:flex;align-items:center;gap:14px;padding:18px;position:relative;overflow:hidden;color:#fff}
+.course-thumb:after{content:"";position:absolute;width:110px;height:110px;border-radius:50%;right:-28px;top:-38px;background:rgba(255,255,255,.16)}
+.course-thumb .thumb-icon{width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:28px;z-index:1;border:1px solid rgba(255,255,255,.28)}
+.course-thumb strong{font-size:18px;line-height:1.1;z-index:1}
+.course-thumb small{display:block;margin-top:5px;opacity:.9;font-size:12px;z-index:1}
+.thumb-bradesco{background:linear-gradient(135deg,#cc1731,#9b0d23)}
+.thumb-sebrae{background:linear-gradient(135deg,#087a42,#075c34)}
+.thumb-enap{background:linear-gradient(135deg,#1856a8,#123d7b)}
+.thumb-fgv{background:linear-gradient(135deg,#6a4b2a,#40301e)}
+.course-body{padding:16px;display:flex;flex-direction:column;flex:1}
+.course-body p{margin:0 0 14px;line-height:1.5;font-size:14px;color:#555}
+.course-body .btn{align-self:flex-start;margin-top:auto}
+.course-label{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:9px;opacity:.7}
+@media(max-width:650px){.course-links{grid-template-columns:1fr;gap:14px}.course-thumb{height:100px}.course-body{padding:15px}.course-thumb strong{font-size:17px}}
+</style>
+</head>
+<body>
+<header class="page-topbar"><a class="back-link" href="../index.html" aria-label="Voltar">‹</a><div class="page-brand"><img class="mini-logo" src="../assets/logo-gota-de-mel.png" alt=""><div><h1>Cursos Gratuitos</h1><small>Viver Bem</small></div></div></header>
+<main class="page-content cursos-page">
+<section class="intro-card"><div class="intro-icon">🎓</div><h2>Cursos Gratuitos</h2><p>Oportunidades para ampliar conhecimentos no seu ritmo.</p></section>
+<section class="content-card"><h3>Encontre uma oportunidade para você</h3><p>Plataformas confiáveis com cursos gratuitos para aprender, se atualizar e desenvolver novas habilidades.</p>
+<div class="course-links">
+<article class="course-card"><div class="course-thumb thumb-bradesco"><div class="thumb-icon">🎓</div><div><strong>Escola Virtual</strong><small>Fundação Bradesco</small></div></div><div class="course-body"><span class="course-label">💻 Aprendizado online</span><p>Cursos gratuitos e 100% on-line em tecnologia, produtividade e desenvolvimento pessoal.</p><a class="btn" href="https://www.ev.org.br/cursos" target="_blank" rel="noopener noreferrer">Acessar cursos</a></div></article>
+<article class="course-card"><div class="course-thumb thumb-sebrae"><div class="thumb-icon">💼</div><div><strong>SEBRAE</strong><small>Empreendedorismo e gestão</small></div></div><div class="course-body"><span class="course-label">🚀 Desenvolvimento profissional</span><p>Cursos online gratuitos em gestão, pessoas, marketing, finanças e empreendedorismo.</p><a class="btn" href="https://loja.sebrae.com.br/cursos/cursos-online" target="_blank" rel="noopener noreferrer">Acessar cursos</a></div></article>
+<article class="course-card"><div class="course-thumb thumb-enap"><div class="thumb-icon">🏛️</div><div><strong>Escola Virtual de Governo</strong><small>ENAP</small></div></div><div class="course-body"><span class="course-label">📚 Conhecimento</span><p>Cursos gratuitos e autoinstrucionais em diversas áreas, com opções que oferecem certificado.</p><a class="btn" href="https://www.escolavirtual.gov.br/" target="_blank" rel="noopener noreferrer">Acessar cursos</a></div></article>
+<article class="course-card"><div class="course-thumb thumb-fgv"><div class="thumb-icon">📖</div><div><strong>FGV</strong><small>Cursos gratuitos</small></div></div><div class="course-body"><span class="course-label">🎯 Gestão e carreira</span><p>Opções gratuitas em gestão, educação, tecnologia, finanças, negócios e outras áreas.</p><a class="btn" href="https://educacao-executiva.fgv.br/cursos/gratuitos" target="_blank" rel="noopener noreferrer">Acessar cursos</a></div></article>
+</div></section>
+<section class="content-card"><h3>Antes de começar</h3><p>Confira a carga horária, o conteúdo, a emissão de certificado e se o curso combina com seu objetivo.</p></section>
+</main>
+<footer>Escola Gota de Mel</footer>
+</body>
+</html>
