@@ -462,3 +462,25 @@ html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:"Segoe UI
   .company-events-copy span { font-size: .7rem; }
   .company-events-toggle { font-size: .7rem; }
 }
+
+/* Agenda Cultural — miniaturas menores e mais compactas no mobile */
+@media (max-width: 699px) {
+  .highlights .highlight-card {
+    min-width: 205px;
+    max-width: 205px;
+    border-radius: 16px;
+  }
+  .highlights .highlight-image-wrap {
+    height: 88px;
+  }
+  .highlights .highlight-copy {
+    padding: 10px 11px 12px;
+  }
+  .highlights .highlight-copy strong {
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+  .highlights .highlight-copy span {
+    font-size: 11px;
+  }
+}
