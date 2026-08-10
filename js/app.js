@@ -43,7 +43,7 @@ async function loadEvents(){
     if(!response.ok)throw new Error("Agenda indisponível");
     const payload=await response.json();
     const today=new Date(); today.setHours(0,0,0,0);
-    const events=(payload.eventos||[]).filter(e=>{const d=new Date(`${e.data}T12:00:00`);return !Number.isNaN(d.getTime())&&d>=today}).sort((a,b)=>a.data.localeCompare(b.data)||a.titulo.localeCompare(b.titulo,"pt-BR"));
+    const allEvents=(payload.eventos||[]); const futureEvents=allEvents.filter(e=>{const d=new Date(`${e.data}T12:00:00`);return !Number.isNaN(d.getTime())&&d>=today}).sort((a,b)=>a.data.localeCompare(b.data)||a.titulo.localeCompare(b.titulo,"pt-BR")); const events=futureEvents.length?futureEvents:allEvents.slice().sort((a,b)=>b.data.localeCompare(a.data)).slice(0,12);
     if(carousel){carousel.innerHTML=""; events.slice(0,12).forEach(e=>carousel.append(createEventCard(e))); if(!events.length)carousel.innerHTML='<div class="events-empty">A agenda automática ainda não foi atualizada. Use “Ver agenda” para acessar os sites oficiais.</div>';}
     if(list){list.innerHTML=""; events.forEach(e=>list.append(createAgendaEvent(e))); if(!events.length)list.innerHTML='<div class="events-empty">Nenhum evento futuro foi identificado na última consulta automática.</div>';}
     const status=document.querySelector("[data-events-status]");

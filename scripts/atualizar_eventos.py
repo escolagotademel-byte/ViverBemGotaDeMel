@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "eventos.json"
 
 SOURCES = {
-    "APPAI": "https://www.appai.org.br/lazer/eventos/",
+    "APPAI": "https://www.appai.org.br/lazer/beneficio-appai-agito/",
     "SESC": "https://cultura.sescrio.org.br/programacao",
 }
 
