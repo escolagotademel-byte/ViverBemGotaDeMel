@@ -484,3 +484,15 @@ html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:"Segoe UI
     font-size: 11px;
   }
 }
+
+/* Ajustes finais mobile: mais respiro entre Frase do Dia e Eventos da Gota de Mel */
+.company-events {
+  margin-top: 12px;
+}
+
+/* Agenda Cultural: imagens ilustrativas mais baixas no mobile */
+@media (max-width: 699px) {
+  .highlights .highlight-image-wrap {
+    height: 68px;
+  }
+}
