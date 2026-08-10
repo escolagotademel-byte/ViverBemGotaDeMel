@@ -365,3 +365,6 @@ html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:"Segoe UI
   .recommendation-body { padding: 13px; }
   .recommendation-meta { font-size: .73rem; }
 }
+
+/* Cursos Gratuitos */
+.course-links{display:grid;gap:14px;margin-top:16px}.course-link{display:block;padding:16px;border-radius:16px;background:#fffaf0;border:1px solid rgba(40,82,45,.12);text-decoration:none;color:inherit;box-shadow:0 4px 14px rgba(0,0,0,.05)}.course-link strong{display:block;font-size:1rem;color:#28522d;margin-bottom:7px}.course-link span{display:block;font-size:.9rem;line-height:1.45;color:#555;margin-bottom:10px}.course-link b{font-size:.85rem;color:#b27b00}@media(max-width:600px){.course-link{padding:14px}.course-link strong{font-size:.95rem}}
