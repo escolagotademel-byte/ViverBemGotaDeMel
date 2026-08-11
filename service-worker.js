@@ -1,14 +1,13 @@
-const CACHE_NAME = 'viver-bem-shell-v3';
+const CACHE_NAME = 'viver-bem-shell-v6';
 const APP_SHELL = [
   './',
   './index.html',
   './css/style.css',
   './js/app.js',
-  './js/eventos-internos.js',
   './assets/logo-gota-de-mel.png',
   './icon-192.png',
   './icon-512.png',
-  './manifest.json'
+  './manifest.json, ./pages/eventos.html'
 ];
 
 self.addEventListener('install', event => {
