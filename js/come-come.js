@@ -1,4 +1,163 @@
-(()=>{const C=document.querySelector('#board'),X=C.getContext('2d'),maps=[
-["#############","#P....#....E#","#.###.#.###.#","#.....#.....#","#.#########.#","#...........#","#.#########.#","#.....#.....#","#.###.#.###.#","#...........#","#############"],
-["#############","#P....#....E#","#.###.#.###.#","#.#.......#.#","#.#.#####.#.#","#...#...#...#","###.#.#.#.###","#...#.#.#...#","#.###.#.###.#","#...........#","#############"],
-["#############","#P....#....E#","#.###.#.###.#","#...#.#.#...#","###.#.#.#.###","#.....#.....#","#.#########.#","#...#...#...#","#.#.###.###.#","#...........#","#############"]];let L=0,SCORE=0,B,P,E,stars,run,tick=0;const K=(x,y)=>x+','+y;function setup(){B=maps[L].map(r=>r.split(''));P=E=null;stars=[];B.forEach((r,y)=>r.forEach((v,x)=>{if(v==='P'){P={x,y};B[y][x]='.'}else if(v==='E'){E={x,y};B[y][x]='.'}if(B[y][x]==='.')stars.push({x,y})}));run=true;tick=0;document.querySelector('#lv').textContent=L+1;document.querySelector('#msg').textContent='Colete todas as estrelas e fuja do inimigo! 👾';draw()}function wall(x,y){return x<0||y<0||y>=B.length||x>=B[0].length||B[y][x]==='#'}function move(dx,dy){if(!run)return;let x=P.x+dx,y=P.y+dy;if(wall(x,y))return;P={x,y};let i=stars.findIndex(s=>s.x===x&&s.y===y);if(i>=0){stars.splice(i,1);SCORE++;document.querySelector('#sc').textContent=SCORE}if(P.x===E.x&&P.y===E.y)return lose();if(!stars.length)return win();draw()}function lose(){run=false;document.querySelector('#msg').textContent='👾 O inimigo pegou você! Recomece a fase.';draw()}function win(){run=false;if(L===maps.length-1)document.querySelector('#msg').textContent='🏆 Parabéns! Você completou o Come-Come! Pequenas pausas também fazem bem. 💛';else{document.querySelector('#msg').textContent='🌟 Fase concluída!';setTimeout(()=>{L++;setup()},900)}}function enemy(){if(!run)return;if(++tick%(Math.max(3,8-L*2)))return;let o=[[1,0],[-1,0],[0,1],[0,-1]].map(v=>({x:E.x+v[0],y:E.y+v[1]})).filter(v=>!wall(v.x,v.y));o.sort((a,b)=>Math.abs(a.x-P.x)+Math.abs(a.y-P.y)-Math.abs(b.x-P.x)-Math.abs(b.y-P.y));let q=o[Math.random()<.8?0:Math.floor(Math.random()*o.length)];if(q)E=q;if(P.x===E.x&&P.y===E.y)lose();draw()}function draw(){let s=C.width/B[0].length;X.fillStyle='#173f33';X.fillRect(0,0,C.width,C.height);B.forEach((r,y)=>r.forEach((v,x)=>{if(v==='#'){X.fillStyle='#6bb7e6';X.fillRect(x*s+2,y*s+2,s-4,s-4)}}));X.textAlign='center';X.textBaseline='middle';X.font=Math.floor(s*.58)+'px Arial';stars.forEach(a=>X.fillText('⭐',a.x*s+s/2,a.y*s+s/2));let r=s*.32;X.fillStyle='#f6c344';X.beginPath();X.moveTo(P.x*s+s/2,P.y*s+s/2);X.arc(P.x*s+s/2,P.y*s+s/2,r,.25,Math.PI*2-.25);X.fill();X.fillStyle='#df6269';X.beginPath();X.arc(E.x*s+s/2,E.y*s+s/2,r,Math.PI,0);X.lineTo(E.x*s+s/2+r,E.y*s+s/2+r);X.lineTo(E.x*s+s/2-r,E.y*s+s/2+r);X.fill()}document.querySelectorAll('[data]').forEach(b=>b.onclick=()=>move(...b.dataset.data.split(',').map(Number)));document.querySelector('#restart').onclick=setup;window.addEventListener('keydown',e=>{let m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(m){e.preventDefault();move(...m)}});let sx,sy;C.addEventListener('touchstart',e=>{let t=e.touches[0];sx=t.clientX;sy=t.clientY},{passive:true});C.addEventListener('touchend',e=>{let t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))<18)return;Math.abs(dx)>Math.abs(dy)?move(dx>0?1:-1,0):move(0,dy>0?1:-1)},{passive:true});setup();setInterval(enemy,140)})();
+(()=>{
+  const canvas=document.querySelector('#c');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const N=15,T=28,C=420;
+  const levelEl=document.querySelector('#lv');
+  const scoreEl=document.querySelector('#sc');
+  const msg=document.querySelector('#m');
+
+  let level=1,score=0,walls=new Set(),stars=[];
+  let player,enemy,running=true,lost=false,last=performance.now(),transition=false;
+  const key=(x,y)=>`${x},${y}`;
+  const DIRS={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
+
+  const atCenter=o=>Math.abs(o.x-Math.round(o.x))<0.09&&Math.abs(o.y-Math.round(o.y))<0.09;
+  const canMove=(o,d)=>{
+    if(!d)return false;
+    const gx=Math.round(o.x),gy=Math.round(o.y);
+    return !walls.has(key(gx+d.x,gy+d.y));
+  };
+  const snap=o=>{o.x=Math.round(o.x);o.y=Math.round(o.y)};
+
+  function buildWalls(){
+    walls=new Set();
+    for(let i=0;i<N;i++){
+      walls.add(key(i,0));walls.add(key(i,N-1));walls.add(key(0,i));walls.add(key(N-1,i));
+    }
+    const bars=2+Math.floor(level/2);
+    for(let q=0;q<bars;q++){
+      const x=3+q*3;
+      if(x>=N-1)break;
+      for(let y=2;y<N-2;y++) if((y+q*2)%5!==0) walls.add(key(x,y));
+    }
+    walls.delete(key(1,1));walls.delete(key(N-2,N-2));
+  }
+
+  function setup(){
+    buildWalls();
+    player={x:1,y:1,dir:null,want:null,target:null,speed:4.15};
+    enemy={x:N-2,y:N-2,dir:null,target:null,speed:Math.min(2.05+level*.13,3.25)};
+    stars=[];
+    const amount=Math.min(5+level*2,24);
+    const free=[];
+    for(let y=1;y<N-1;y++)for(let x=1;x<N-1;x++){
+      if(!walls.has(key(x,y))&&!(x===1&&y===1)&&!(x===N-2&&y===N-2))free.push({x,y});
+    }
+    for(let i=free.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[free[i],free[j]]=[free[j],free[i]]}
+    stars=free.slice(0,amount);
+    running=true;lost=false;transition=false;
+    msg.textContent='Colete todas as estrelas e fuja do inimigo! 👾';
+    levelEl.textContent=level;
+    draw();
+  }
+
+  function requestDirection(d){
+    if(lost){setup();}
+    if(!running||transition)return;
+    player.want=d;
+    if(!player.dir&&atCenter(player)&&canMove(player,d)){snap(player);player.dir=d;}
+  }
+
+  function moveEntity(o,dt,isPlayer=false){
+    let remaining=o.speed*dt;
+    while(remaining>0.0001){
+      if(!o.target){
+        snap(o);
+        if(isPlayer&&o.want&&canMove(o,o.want))o.dir=o.want;
+        if(!o.dir||!canMove(o,o.dir)){o.dir=null;return;}
+        o.target={x:o.x+o.dir.x,y:o.y+o.dir.y};
+      }
+      const dx=o.target.x-o.x,dy=o.target.y-o.y;
+      const dist=Math.hypot(dx,dy);
+      if(dist<=remaining+.0001){
+        o.x=o.target.x;o.y=o.target.y;remaining-=dist;o.target=null;
+        if(isPlayer&&o.want&&canMove(o,o.want))o.dir=o.want;
+        if(!isPlayer)return;
+      }else{
+        o.x+=dx/dist*remaining;o.y+=dy/dist*remaining;remaining=0;
+      }
+    }
+  }
+
+  function chooseEnemyDirection(){
+    if(enemy.target)return;
+    snap(enemy);
+    const options=Object.values(DIRS).filter(d=>canMove(enemy,d));
+    if(!options.length){enemy.dir=null;return;}
+    const reverse=enemy.dir&&{x:-enemy.dir.x,y:-enemy.dir.y};
+    let candidates=options;
+    if(reverse&&options.length>1)candidates=options.filter(d=>d.x!==reverse.x||d.y!==reverse.y);
+    candidates.sort((a,b)=>{
+      const da=Math.abs(enemy.x+a.x-player.x)+Math.abs(enemy.y+a.y-player.y);
+      const db=Math.abs(enemy.x+b.x-player.x)+Math.abs(enemy.y+b.y-player.y);
+      return da-db;
+    });
+    enemy.dir=Math.random()<0.78?candidates[0]:candidates[Math.floor(Math.random()*candidates.length)];
+  }
+
+  function collect(){
+    const i=stars.findIndex(s=>Math.hypot(s.x-player.x,s.y-player.y)<.24);
+    if(i<0)return;
+    stars.splice(i,1);score++;scoreEl.textContent=score;
+    if(stars.length===0)finishLevel();
+  }
+
+  function finishLevel(){
+    running=false;transition=true;
+    if(level===10){msg.textContent='🏆 Você completou o Come-Come! Pequenas pausas também fazem bem. 💛';transition=false;return;}
+    msg.textContent='🌟 Fase concluída!';
+    setTimeout(()=>{level++;setup()},850);
+  }
+
+  function checkHit(){
+    if(Math.hypot(player.x-enemy.x,player.y-enemy.y)<.62){
+      running=false;lost=true;player.dir=null;player.target=null;enemy.dir=null;enemy.target=null;
+      msg.textContent='👾 O inimigo pegou você! Toque em uma direção para tentar novamente.';
+    }
+  }
+
+  function update(dt){
+    if(!running)return;
+    moveEntity(player,dt,true);
+    collect();
+    chooseEnemyDirection();
+    moveEntity(enemy,dt,false);
+    checkHit();
+  }
+
+  function draw(){
+    ctx.fillStyle='#173f33';ctx.fillRect(0,0,C,C);
+    ctx.fillStyle='#68b6df';
+    walls.forEach(v=>{const [x,y]=v.split(',').map(Number);ctx.fillRect(x*T+2,y*T+2,T-4,T-4)});
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='20px Arial';
+    stars.forEach(s=>ctx.fillText('⭐',s.x*T+T/2,s.y*T+T/2));
+
+    const px=player.x*T+T/2,py=player.y*T+T/2;
+    let angle=0;if(player.dir){if(player.dir.x<0)angle=Math.PI;else if(player.dir.y<0)angle=-Math.PI/2;else if(player.dir.y>0)angle=Math.PI/2;}
+    const mouth=.22+.12*Math.abs(Math.sin(performance.now()/105));
+    ctx.fillStyle='#f6c344';ctx.beginPath();ctx.moveTo(px,py);ctx.arc(px,py,10,angle+mouth,angle+Math.PI*2-mouth);ctx.closePath();ctx.fill();
+
+    const ex=enemy.x*T+T/2,ey=enemy.y*T+T/2;
+    ctx.fillStyle='#d95d63';ctx.beginPath();ctx.arc(ex,ey-1,10,Math.PI,0);ctx.lineTo(ex+10,ey+9);ctx.lineTo(ex+5,ey+5);ctx.lineTo(ex,ey+9);ctx.lineTo(ex-5,ey+5);ctx.lineTo(ex-10,ey+9);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ex-4,ey-2,2.4,0,Math.PI*2);ctx.arc(ex+4,ey-2,2.4,0,Math.PI*2);ctx.fill();
+  }
+
+  function loop(now){
+    const dt=Math.min((now-last)/1000,.035);last=now;
+    update(dt);draw();requestAnimationFrame(loop);
+  }
+
+  document.querySelectorAll('[data-dir]').forEach(btn=>{
+    const [x,y]=btn.dataset.dir.split(',').map(Number);
+    const dir={x,y};
+    btn.addEventListener('pointerdown',e=>{e.preventDefault();requestDirection(dir)});
+  });
+
+  window.addEventListener('keydown',e=>{
+    const map={ArrowUp:DIRS.up,ArrowDown:DIRS.down,ArrowLeft:DIRS.left,ArrowRight:DIRS.right,w:DIRS.up,W:DIRS.up,s:DIRS.down,S:DIRS.down,a:DIRS.left,A:DIRS.left,d:DIRS.right,D:DIRS.right};
+    const dir=map[e.key];if(!dir)return;e.preventDefault();requestDirection(dir);
+  },{passive:false});
+
+  setup();requestAnimationFrame(loop);
+})();
