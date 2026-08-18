@@ -496,7 +496,3 @@ html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:"Segoe UI
     height: 68px;
   }
 }
-
-/* Eventos internos da escola */
-.company-events-card{margin:14px 0 18px;padding:14px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:1px solid rgba(40,82,45,.12);border-radius:18px;box-shadow:0 6px 18px rgba(40,55,75,.05)}
-.company-events-main{display:flex;align-items:center;gap:10px;min-width:0}.company-events-icon{font-size:1.55rem;flex:0 0 auto}.company-events-card small{display:block;color:#6c7a72;font-weight:700;margin-bottom:3px}.company-events-card h2{margin:0;font-size:.9rem;line-height:1.35;color:#28522d}.company-events-toggle{flex:0 0 auto;text-decoration:none;font-weight:800;color:#28522d;background:#fff7d6;padding:9px 11px;border-radius:999px;font-size:.82rem}@media(max-width:480px){.company-events-card{margin-top:18px;margin-bottom:18px}.company-events-card h2{font-size:.82rem}.company-events-toggle{padding:8px 10px;font-size:.78rem}}
