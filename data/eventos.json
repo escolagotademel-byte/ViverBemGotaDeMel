@@ -1,5 +1,5 @@
 {
-  "atualizadoEm": "2026-11-03T16:47:05+00:00",
+  "atualizadoEm": "2026-11-04T16:45:50+00:00",
   "fontes": [
     "APPAI",
     "SESC"
@@ -7,9 +7,9 @@
   "imagemAviso": "As imagens são ilustrativas. Confirme os dados no site oficial.",
   "eventos": [
     {
-      "id": "sesc-c3194453fc85",
+      "id": "sesc-e03db39e6fae",
       "titulo": "Dramaturgia em Processo – com Giordano Castro",
-      "data": "2026-11-03",
+      "data": "2026-11-04",
       "horario": "",
       "local": "",
       "descricao": "Dramaturgia em Processo – com Giordano Castro. Programação cultural do Sesc RJ. Confirme horários, ingressos e possíveis alterações no site oficial.",
@@ -19,7 +19,7 @@
       "categoria": "teatro",
       "imagemIlustrativa": true,
       "title": "Dramaturgia em Processo – com Giordano Castro",
-      "date": "2026-11-03",
+      "date": "2026-11-04",
       "time": "",
       "location": "",
       "description": "Dramaturgia em Processo – com Giordano Castro. Programação cultural do Sesc RJ. Confirme horários, ingressos e possíveis alterações no site oficial.",
@@ -27,28 +27,6 @@
       "url": "https://cultura.sescrio.org.br/programacao",
       "image": "assets/eventos/teatro.svg",
       "category": "teatro"
-    },
-    {
-      "id": "sesc-0d484f8dc059",
-      "titulo": "Mais Belo é o Rio que Corre",
-      "data": "2026-11-03",
-      "horario": "",
-      "local": "",
-      "descricao": "Mais Belo é o Rio que Corre. Programação cultural do Sesc RJ. Confirme horários, ingressos e possíveis alterações no site oficial.",
-      "fonte": "SESC",
-      "link": "https://cultura.sescrio.org.br/projetos/maisbeloeorioquecorre",
-      "imagem": "assets/eventos/cultura.svg",
-      "categoria": "cultura",
-      "imagemIlustrativa": true,
-      "title": "Mais Belo é o Rio que Corre",
-      "date": "2026-11-03",
-      "time": "",
-      "location": "",
-      "description": "Mais Belo é o Rio que Corre. Programação cultural do Sesc RJ. Confirme horários, ingressos e possíveis alterações no site oficial.",
-      "source": "SESC",
-      "url": "https://cultura.sescrio.org.br/projetos/maisbeloeorioquecorre",
-      "image": "assets/eventos/cultura.svg",
-      "category": "cultura"
     },
     {
       "id": "sesc-b32ff4b42893",
@@ -69,6 +47,28 @@
       "description": "Lequegrafia e Lipsync. Programação cultural do Sesc RJ. Confirme horários, ingressos e possíveis alterações no site oficial.",
       "source": "SESC",
       "url": "https://cultura.sescrio.org.br/programacao/lequegrafia-e-lipsync",
+      "image": "assets/eventos/cultura.svg",
+      "category": "cultura"
+    },
+    {
+      "id": "sesc-4a001525d937",
+      "titulo": "Mais Belo é o Rio que Corre",
+      "data": "2026-11-04",
+      "horario": "",
+      "local": "",
+      "descricao": "Mais Belo é o Rio que Corre. Programação cultural do Sesc RJ. Confirme horários, ingressos e possíveis alterações no site oficial.",
+      "fonte": "SESC",
+      "link": "https://cultura.sescrio.org.br/projetos/maisbeloeorioquecorre",
+      "imagem": "assets/eventos/cultura.svg",
+      "categoria": "cultura",
+      "imagemIlustrativa": true,
+      "title": "Mais Belo é o Rio que Corre",
+      "date": "2026-11-04",
+      "time": "",
+      "location": "",
+      "description": "Mais Belo é o Rio que Corre. Programação cultural do Sesc RJ. Confirme horários, ingressos e possíveis alterações no site oficial.",
+      "source": "SESC",
+      "url": "https://cultura.sescrio.org.br/projetos/maisbeloeorioquecorre",
       "image": "assets/eventos/cultura.svg",
       "category": "cultura"
     },
